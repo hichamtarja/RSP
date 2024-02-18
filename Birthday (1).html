@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome Page</title>
+  <link rel="stylesheet" href="styles.css">
+<style type="text/css" id="dcoder_stylesheet">body {
+    margin: 0;
+    padding: 0;
+    background-color: #222222; /* تغيير لون الخلفية إلى رمادي داكن جدا */
+    height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+}
+
+canvas { display: block; }
+
+.background-dots {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.dot {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #FF69B4, #8A2BE2);
+    animation: moveDots 2s ease-in-out infinite alternate, changeShape 3s ease-in-out infinite alternate;
+}
+
+/* توزيع الدوائر بشكل طولي على الشاشة */
+.dot:nth-child(1) { top: 5%; left: 5%; }
+.dot:nth-child(2) { top: 15%; left: 15%; }
+.dot:nth-child(3) { top: 25%; left: 25%; }
+.dot:nth-child(4) { top: 35%; left: 35%; }
+.dot:nth-child(5) { top: 45%; left: 45%; }
+.dot:nth-child(6) { top: 55%; left: 55%; }
+.dot:nth-child(7) { top: 65%; left: 65%; }
+.dot:nth-child(8) { top: 75%; left: 75%; }
+.dot:nth-child(9) { top: 85%; left: 85%; }
+.dot:nth-child(10) { top: 95%; left: 95%; }
+.dot:nth-child(11) { top: 10%; left: 90%; }
+.dot:nth-child(12) { top: 20%; left: 80%; }
+.dot:nth-child(13) { top: 30%; left: 70%; }
+.dot:nth-child(14) { top: 40%; left: 60%; }
+.dot:nth-child(15) { top: 50%; left: 50%; }
+.dot:nth-child(16) { top: 60%; left: 40%; }
+.dot:nth-child(17) { top: 70%; left: 30%; }
+.dot:nth-child(18) { top: 80%; left: 20%; }
+.dot:nth-child(19) { top: 90%; left: 10%; }
+.dot:nth-child(20) { top: 5%; left: 95%; }
+
+@keyframes moveDots {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0); }
+}
+
+@keyframes changeShape {
+    0%, 100% { border-radius: 50%; }
+    50% { border-radius: 40%; }
+}
+
+/* تحديد الخصائص العامة للعناصر */
+.welcome-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    height: 90vh;
+    animation: slideIn 2s ease-in-out;
+}
+
+.welcome-text {
+    font-size: 60px;
+    font-weight: bold;
+    color: white;
+    font-family: sans-serif;
+    margin-top: 10px;
+    animation: move 1s infinite alternate;
+}
+
+@keyframes slideIn {
+    0% {
+        transform: translateY(-100px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+@keyframes move {
+    0% {
+        transform: translateX(-5px);
+    }
+    100% {
+        transform: translateX(5px);
+    }
+}
+
+.image-container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    transform: scale(1.05);
+    position: relative;
+    left: 2.5%;
+    clip-path: inset(-2500px -2500px 15px -2500px);
+}
+
+.image-container img {
+    border-radius: 10% 10% 10% 10%;
+}
+
+.countdown {
+    display: flex;
+    position: absolute;
+    top: 50px;
+    right: 50%;
+    color: white;
+    justify-content: center;
+    font-size: 50px;
+    font-family: sans-serif;
+    text-shadow: 5px 5px 4px rgba(10, 10, 10, 0.5);
+    transform: translate(50%);
+    font-weight: bold;
+}
+
+/* تصميم العلبة المتعرجة */
+.flip-box {
+    background-color: transparent;
+    width: 540px;
+    height: 680px;
+    overflow: hidden;
+    transform: scale(0.65);
+    position: relative;
+    bottom: 680px;
+    right: 20.9%;
+    border: 0px solid #f1f1f1;
+    perspective: 1000px; /* Remove this if you don't want the 3D effect */
+    border-radius: 10% 10% 10% 10%;
+}
+
+.flip-box-inner {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+}
+
+.flip-box:hover .flip-box-inner {
+    transform: rotateY(180deg);
+}
+
+.flip-box-front,
+.flip-box-back {
+    position: absolute;
+    -webkit-backface-visibility: hidden; /* Safari */
+    
+}
+
+.flip-box-front {
+    background-color: #bbb;
+    color: black;
+    backface-visibility: hidden;
+    
+}
+
+.flip-box-back {
+    position: absolute;
+    background-color: grey;
+    height: 100%;
+    width: 100%;
+    color: white;
+    font-size: 25px;
+    font-family: 'monospace', 'console';
+    transform: rotateY(180deg);
+ 
+}
+
+
+.title {
+    text-align: left;
+}
+
+.paragraph {
+    text-align: right;
+}
+
+.button {
+    width: 77px;
+    height: 77px;
+    background-color: transparent;
+    cursor: pointer;
+    border-radius: 50%;
+    position: absolute;
+    top: 73%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+}
+
+.button:active {
+    border-radius: 50%;
+    background-color: black;
+}
+
+body { margin: 0; overflow: hidden; } 
+canvas { display: block; }
+
+/* تحديث النسبة المئوية للملء */
+/* تحديث النسبة المئوية للملء */
+:root {
+    --fill-percentage: 0%;
+}
+
+/* تحديث الدائرة */
+.inner-circle {
+    width: 75px;
+    height: 75px;
+    background-color: #7FFF00; /* تغيير لون الدائرة إلى الأخضر */
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0px 5px 5px 5px rgba(0.5, 0.5, 0.5, 0.3);
+    overflow: hidden; /* للسماح بالتأثير المائي */
+    z-index: 0; /* تحديث ترتيب الطبقات للعنصر الدائري */
+}
+
+/* إضافة خلفية سوداء ثابتة */
+.inner-circle::after {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black; /* اللون الأسود للخلفية */
+    border-radius: 50%;
+    z-index: 1; /* تحديث ترتيب الطبقات للخلفية */
+}
+
+/* تحديث النسبة المئوية للملء */
+@keyframes fillCircle {
+    0% {
+        transform: translateY(100%) scaleY(0); /* البداية: في الأسفل ولا يظهر */
+    }
+    100% {
+        transform: translateY(0%) scaleY(1); /* النهاية: يملأ الدائرة بالكامل */
+    }
+}
+
+
+
+.text1-container {
+    font-family: monospace;
+    font-size: 17px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 1.5;
+    letter-spacing: 1px;
+    color: #FFFFFF;
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.button2-container {
+    display: inline-block;
+    background-color: white;
+    color: black;
+    padding: 3px 10px;
+    font-size: 12px;
+    font-family: 'monospace', 'lucida console';
+    border-radius: 5px;
+    cursor: pointer;
+    position: absolute;
+    bottom: 35px;
+    left: 50%;
+    transform: translateX(-50%);
+}</style></head>
+<body>
+  <div class="flex-container">
+    <div class="background-dots"></div>
+    <div class="dot"></div>
+    <div class="welcome-container">
+      <h1 class="welcome-text">Welcome</h1>
+    </div>
+    <div class="flip-box-container">
+      <div class="flip-box">
+        <div class="flip-box-inner">
+          <div class="flip-box-front">
+            <div class="image-container">
+              <img src="https://i.imgur.com/sjV4rHu.gif" title="source: imgur.com">
+            </div>
+            <div class="countdown" id="countdown"></div>
+          </div>
+          <div class="flip-box-back">
+            <div class="title">
+              <h2>Me</h2>
+            </div>
+            <div class="paragraph">
+              <p>What?</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="grid-container">
+    <div class="content-container">
+      <button class="button" id="button">
+        <span class="inner-circle"></span>
+        <span class="inner-circle-after"></span>
+      </button>
+    </div>
+    <div class="text1-container">
+      <p>Feel boring, right?</p>
+    </div>
+    <div class="button2-container">
+      <button2-container>Press here :)</button2-container>
+    </div>
+  </div>
+  <script src="script.js"></script>
+  <a href="Home-page.html"></a>
+
+<script type="text/javascript" id="dcoder_script">// تاريخ البدء والانتهاء
+const startDate = new Date("18 February 2024 11:00:00").getTime();
+const endDate = new Date("18 February 2024 13:00:00").getTime();
+
+// تحويل العد التنازلي إلى نسبة مئوية
+function calculatePercentage() {
+    const now = new Date().getTime();
+    const elapsed = now - startDate;
+    const duration = endDate - startDate;
+    return Math.min(100, Math.max(0, ((now - startDate) / duration) * 100));
+}
+
+// تحديث نسبة ملء الدائرة
+function updateFillPercentage() {
+    const fillPercentage = calculatePercentage();
+    const innerCircle = document.querySelector(".inner-circle");
+    if (innerCircle) {
+        innerCircle.style.setProperty('--fill-percentage', fillPercentage + "%");
+    }
+}
+
+// تحديث العداد كل ثانية وتحديث نسبة ملء الدائرة
+const countdown = setInterval(function() {
+    // تحديث العداد
+    const now = new Date().getTime();
+    const distance = endDate - now;
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    document.getElementById("countdown").innerHTML = hours + "h " + minutes + "m " + seconds + "s ";
+    
+    // إذا كانت العداد قد انتهى، عرض نص "انتهى الوقت"
+    if (distance < 0) {
+        clearInterval(countdown);
+        document.getElementById("countdown").innerHTML = "انتهى الوقت";
+    }
+
+    // تحديث نسبة ملء الدائرة
+    updateFillPercentage();
+}, 1000);</script></body></html>
