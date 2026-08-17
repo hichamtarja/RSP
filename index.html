@@ -20,9 +20,9 @@ body {
     user-select: none;
 }
 
-/* =========================
-   NAVIGATION
-========================= */
+button {
+    font-family: inherit;
+}
 
 nav {
     position: fixed;
@@ -34,7 +34,7 @@ nav {
     border-bottom: 1px solid #292929;
     display: flex;
     justify-content: center;
-    z-index: 100;
+    z-index: 1000;
 }
 
 nav button {
@@ -43,18 +43,14 @@ nav button {
     border: none;
     background: transparent;
     color: #777;
-    font-size: 15px;
+    font-size: 14px;
+    cursor: pointer;
 }
 
 nav button.active {
     background: #222;
     color: white;
 }
-
-
-/* =========================
-   SECTIONS
-========================= */
 
 .section {
     display: none;
@@ -68,30 +64,111 @@ nav button.active {
 
 .container {
     width: 100%;
-    max-width: 650px;
+    max-width: 700px;
     margin: auto;
 }
 
 
-/* =========================
-   HOME
-========================= */
+/* =========================================================
+   MAIN HOME
+========================================================= */
 
-#home {
+#mainHome {
     align-items: center;
     justify-content: center;
 }
 
-#home.active {
+#mainHome.active {
+    display: flex;
+}
+
+.launcher {
+    width: 100%;
+    max-width: 650px;
+    text-align: center;
+}
+
+.launcher-title {
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.launcher-subtitle {
+    color: #777;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 35px;
+}
+
+.mode-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.mode-card {
+    background: #1c1c1c;
+    border: 1px solid #292929;
+    border-radius: 18px;
+    padding: 28px 18px;
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+.mode-card:active {
+    transform: scale(0.97);
+    background: #242424;
+}
+
+.mode-icon {
+    font-size: 42px;
+    margin-bottom: 15px;
+}
+
+.mode-title {
+    font-size: 19px;
+    font-weight: bold;
+}
+
+.mode-description {
+    color: #777;
+    font-size: 12px;
+    line-height: 1.5;
+    margin-top: 8px;
+}
+
+.mode-count {
+    margin-top: 18px;
+    color: #aaa;
+    font-size: 13px;
+}
+
+.mode-count strong {
+    color: white;
+}
+
+
+/* =========================================================
+   NORMAL RECORDER
+========================================================= */
+
+#normalHome {
+    align-items: center;
+    justify-content: center;
+}
+
+#normalHome.active {
     display: flex;
 }
 
 .recorder {
     width: 100%;
+    max-width: 650px;
     text-align: center;
 }
 
-#status {
+#normalStatus {
     font-size: 20px;
     color: #aaa;
     margin-bottom: 30px;
@@ -119,12 +196,7 @@ nav button.active {
     background: #444;
 }
 
-
-/* =========================
-   LAST GAME
-========================= */
-
-#lastGame {
+#normalLastGame {
     margin-top: 25px;
     color: #777;
     font-size: 14px;
@@ -144,9 +216,9 @@ nav button.active {
 }
 
 
-/* =========================
-   STATS
-========================= */
+/* =========================================================
+   TITLES / STATS
+========================================================= */
 
 h1 {
     margin-top: 0;
@@ -162,19 +234,19 @@ h1 {
 .stat {
     background: #1c1c1c;
     border-radius: 15px;
-    padding: 25px 10px;
+    padding: 22px 10px;
     text-align: center;
 }
 
 .stat-number {
-    font-size: 36px;
+    font-size: 30px;
     font-weight: bold;
 }
 
 .stat-label {
     margin-top: 8px;
     color: #888;
-    font-size: 13px;
+    font-size: 12px;
 }
 
 .win {
@@ -193,14 +265,44 @@ h1 {
     color: white;
 }
 
-.winrate {
+.rate {
     color: #5dade2;
 }
 
 
-/* =========================
+/* =========================================================
+   GENERAL CONTROLS
+========================================================= */
+
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 25px;
+    flex-wrap: wrap;
+}
+
+.control-button {
+    border: none;
+    background: #222;
+    color: white;
+    padding: 10px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.control-button:active {
+    background: #444;
+}
+
+.danger {
+    color: #f44336;
+}
+
+
+/* =========================================================
    HISTORY
-========================= */
+========================================================= */
 
 .history-header {
     display: flex;
@@ -221,25 +323,8 @@ h1 {
     justify-content: flex-end;
 }
 
-.control-button {
-    border: none;
-    background: #222;
-    color: white;
-    padding: 9px 11px;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-.control-button:active {
-    background: #444;
-}
-
-
-/* =========================
-   HISTORY LIST
-========================= */
-
-#history {
+#normalHistory,
+#experimentHistory {
     background: #181818;
     border-radius: 12px;
     overflow: hidden;
@@ -286,9 +371,9 @@ h1 {
 }
 
 
-/* =========================
+/* =========================================================
    BACKUP
-========================= */
+========================================================= */
 
 .backup {
     margin-top: 30px;
@@ -327,19 +412,223 @@ h1 {
 }
 
 
-/* =========================
+/* =========================================================
+   EXPERIMENT
+========================================================= */
+
+#experimentHome {
+    align-items: center;
+    justify-content: center;
+}
+
+#experimentHome.active {
+    display: flex;
+}
+
+.experiment-box {
+    width: 100%;
+    max-width: 650px;
+    text-align: center;
+}
+
+.title {
+    font-size: 25px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.subtitle {
+    color: #777;
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 25px;
+}
+
+.progress {
+    color: #888;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.required-label {
+    color: #777;
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+.required-move {
+    font-size: 70px;
+    font-weight: bold;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.instruction {
+    color: #aaa;
+    font-size: 15px;
+    margin: 10px 0 25px;
+}
+
+.bot-label {
+    color: #777;
+    font-size: 13px;
+    margin-bottom: 10px;
+}
+
+.bot-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.bot-button {
+    flex: 1;
+    height: 105px;
+    font-size: 40px;
+    font-weight: bold;
+    border: none;
+    border-radius: 16px;
+    background: #222;
+    color: white;
+    cursor: pointer;
+}
+
+.bot-button:active {
+    transform: scale(0.94);
+    background: #444;
+}
+
+.bot-button:disabled {
+    opacity: 0.35;
+}
+
+.last-result {
+    min-height: 24px;
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   CARDS / MATRIX
+========================================================= */
+
+.card {
+    margin-top: 20px;
+    background: #181818;
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.card-title {
+    padding: 16px;
+    font-weight: bold;
+    border-bottom: 1px solid #292929;
+}
+
+.matrix {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.matrix th,
+.matrix td {
+    padding: 13px 8px;
+    text-align: center;
+    border-bottom: 1px solid #292929;
+}
+
+.matrix th {
+    color: #888;
+    font-weight: normal;
+}
+
+.matrix td {
+    font-family: monospace;
+}
+
+.counter {
+    color: #f44336;
+    font-weight: bold;
+}
+
+.same {
+    color: #ffc107;
+}
+
+.non-counter {
+    color: #4caf50;
+}
+
+.status-card {
+    background: #181818;
+    border-radius: 14px;
+    padding: 18px;
+    margin-top: 20px;
+}
+
+.status-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    color: #aaa;
+    font-size: 14px;
+}
+
+.status-row strong {
+    color: white;
+}
+
+.info {
+    margin-top: 25px;
+    padding: 17px;
+    background: #181818;
+    border-radius: 14px;
+    color: #888;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.info strong {
+    color: white;
+}
+
+
+/* =========================================================
    MOBILE
-========================= */
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .mode-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .launcher-title {
+        font-size: 26px;
+    }
+}
 
 @media (max-width: 500px) {
 
     nav button {
-        font-size: 13px;
+        font-size: 12px;
     }
 
     .rps-button {
         height: 100px;
         font-size: 40px;
+    }
+
+    .required-move {
+        font-size: 65px;
+    }
+
+    .bot-button {
+        height: 95px;
+        font-size: 36px;
     }
 
     .history-header {
@@ -367,43 +656,127 @@ h1 {
 <body>
 
 
-<!-- =========================
-     NAVIGATION
-========================= -->
+<!-- =========================================================
+     MAIN NAVIGATION
+========================================================= -->
 
 <nav>
 
     <button
         id="navHome"
         class="active"
-        onclick="showSection('home')">
+        onclick="showMainSection('mainHome')">
         Home
     </button>
 
     <button
-        id="navStats"
-        onclick="showSection('stats')">
-        Stats
+        id="navNormal"
+        onclick="showMainSection('normalHome')">
+        Recorder
     </button>
 
     <button
-        id="navHistory"
-        onclick="showSection('historySection')">
-        History
+        id="navExperiment"
+        onclick="showMainSection('experimentHome')">
+        Experiment
     </button>
 
 </nav>
 
 
-<!-- =========================
-     HOME
-========================= -->
+<!-- =========================================================
+     MAIN HOME
+========================================================= -->
 
-<section id="home" class="section active">
+<section
+    id="mainHome"
+    class="section active">
+
+    <div class="launcher">
+
+        <div class="launcher-title">
+            RPS Recorder
+        </div>
+
+        <div class="launcher-subtitle">
+            Choose a recording mode.
+            Your normal games and experimental data
+            are stored separately.
+        </div>
+
+        <div class="mode-grid">
+
+            <div
+                class="mode-card"
+                onclick="showMainSection('normalHome')">
+
+                <div class="mode-icon">
+                    🎮
+                </div>
+
+                <div class="mode-title">
+                    Normal Recorder
+                </div>
+
+                <div class="mode-description">
+                    Manually record your move and
+                    the bot's response during normal play.
+                </div>
+
+                <div class="mode-count">
+                    <strong id="normalCount">
+                        0
+                    </strong>
+                    games recorded
+                </div>
+
+            </div>
+
+
+            <div
+                class="mode-card"
+                onclick="showMainSection('experimentHome')">
+
+                <div class="mode-icon">
+                    🧪
+                </div>
+
+                <div class="mode-title">
+                    Anti-Cheating Experiment
+                </div>
+
+                <div class="mode-description">
+                    Your move is independently randomized
+                    before every round.
+                </div>
+
+                <div class="mode-count">
+                    <strong id="experimentCount">
+                        0
+                    </strong>
+                    / 300 rounds
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     NORMAL RECORDER HOME
+========================================================= -->
+
+<section
+    id="normalHome"
+    class="section">
 
     <div class="recorder">
 
-        <div id="status">
+        <div id="normalStatus">
             YOUR MOVE
         </div>
 
@@ -411,46 +784,48 @@ h1 {
 
             <button
                 class="rps-button"
-                onclick="choose('P')">
+                onclick="normalChoose('P')">
                 P
             </button>
 
             <button
                 class="rps-button"
-                onclick="choose('R')">
+                onclick="normalChoose('R')">
                 R
             </button>
 
             <button
                 class="rps-button"
-                onclick="choose('S')">
+                onclick="normalChoose('S')">
                 S
             </button>
 
         </div>
 
-        <div id="lastGame"></div>
+        <div id="normalLastGame"></div>
 
     </div>
 
 </section>
 
 
-<!-- =========================
-     STATS
-========================= -->
+<!-- =========================================================
+     NORMAL STATS
+========================================================= -->
 
-<section id="stats" class="section">
+<section
+    id="normalStats"
+    class="section">
 
     <div class="container">
 
-        <h1>Statistics</h1>
+        <h1>Recorder Statistics</h1>
 
         <div class="stats-grid">
 
             <div class="stat">
                 <div
-                    id="totalGames"
+                    id="normalTotalGames"
                     class="stat-number total">
                     0
                 </div>
@@ -460,10 +835,9 @@ h1 {
                 </div>
             </div>
 
-
             <div class="stat">
                 <div
-                    id="wins"
+                    id="normalWins"
                     class="stat-number win">
                     0
                 </div>
@@ -473,10 +847,9 @@ h1 {
                 </div>
             </div>
 
-
             <div class="stat">
                 <div
-                    id="losses"
+                    id="normalLosses"
                     class="stat-number loss">
                     0
                 </div>
@@ -486,10 +859,9 @@ h1 {
                 </div>
             </div>
 
-
             <div class="stat">
                 <div
-                    id="draws"
+                    id="normalDraws"
                     class="stat-number draw">
                     0
                 </div>
@@ -499,11 +871,10 @@ h1 {
                 </div>
             </div>
 
-
             <div class="stat">
                 <div
-                    id="winRate"
-                    class="stat-number winrate">
+                    id="normalWinRate"
+                    class="stat-number rate">
                     0%
                 </div>
 
@@ -519,12 +890,12 @@ h1 {
 </section>
 
 
-<!-- =========================
-     HISTORY
-========================= -->
+<!-- =========================================================
+     NORMAL HISTORY
+========================================================= -->
 
 <section
-    id="historySection"
+    id="normalHistorySection"
     class="section">
 
     <div class="container">
@@ -537,28 +908,21 @@ h1 {
 
                 <button
                     class="control-button"
-                    onclick="undoLast()">
+                    onclick="normalUndo()">
                     Undo
                 </button>
 
                 <button
                     class="control-button"
-                    onclick="exportCSV()">
+                    onclick="normalExportCSV()">
                     CSV
-                </button>
-
-                <button
-                    class="control-button"
-                    onclick="clearData()">
-                    Clear
                 </button>
 
             </div>
 
         </div>
 
-
-        <div id="history">
+        <div id="normalHistory">
 
             <div class="empty">
                 No games recorded yet.
@@ -567,36 +931,445 @@ h1 {
         </div>
 
 
-        <!-- Backup section -->
-
         <div class="backup">
 
             <h2>Backup & Restore</h2>
 
             <p>
-                JSON backup contains your complete game data.
-                Use it if you change browser/device or need
-                to restore your records.
+                Save your normal recorder data as JSON
+                or restore a previous backup.
             </p>
 
             <div class="backup-buttons">
 
-                <button onclick="exportJSON()">
+                <button onclick="normalExportJSON()">
                     Download Backup
                 </button>
 
-                <button onclick="document.getElementById('importFile').click()">
+                <button
+                    onclick="document.getElementById('normalImportFile').click()">
                     Restore Backup
                 </button>
 
                 <input
-                    id="importFile"
+                    id="normalImportFile"
                     type="file"
                     accept=".json"
                     style="display:none"
-                    onchange="importJSON(event)">
+                    onchange="normalImportJSON(event)">
 
             </div>
+
+        </div>
+
+
+        <div class="controls">
+
+            <button
+                class="control-button danger"
+                onclick="normalClear()">
+                Clear Normal Data
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     EXPERIMENT HOME
+========================================================= -->
+
+<section
+    id="experimentHome"
+    class="section">
+
+    <div class="experiment-box">
+
+        <div class="title">
+            Anti-Cheating Experiment
+        </div>
+
+        <div class="subtitle">
+            Your move is generated randomly.
+            Play exactly the displayed move against
+            the real bot, then record its response.
+        </div>
+
+        <div class="progress">
+            Round <strong id="experimentRoundNumber">1</strong>
+            /
+            <strong id="experimentTargetNumber">300</strong>
+        </div>
+
+        <div class="required-label">
+            PLAY THIS MOVE
+        </div>
+
+        <div
+            id="requiredMove"
+            class="required-move">
+            R
+        </div>
+
+        <div class="instruction">
+            Play the move above against the bot.
+            Then select what the bot actually played.
+        </div>
+
+        <div class="bot-label">
+            WHAT DID THE BOT PLAY?
+        </div>
+
+        <div class="bot-buttons">
+
+            <button
+                id="botR"
+                class="bot-button"
+                onclick="recordBot('R')">
+                R
+            </button>
+
+            <button
+                id="botP"
+                class="bot-button"
+                onclick="recordBot('P')">
+                P
+            </button>
+
+            <button
+                id="botS"
+                class="bot-button"
+                onclick="recordBot('S')">
+                S
+            </button>
+
+        </div>
+
+        <div
+            id="lastResult"
+            class="last-result">
+        </div>
+
+        <div class="controls">
+
+            <button
+                class="control-button"
+                onclick="togglePause()"
+                id="pauseButton">
+                Pause
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     EXPERIMENT ANALYSIS
+========================================================= -->
+
+<section
+    id="experimentStats"
+    class="section">
+
+    <div class="container">
+
+        <h1>Experiment Analysis</h1>
+
+        <div class="stats-grid">
+
+            <div class="stat">
+                <div
+                    id="experimentTotalGames"
+                    class="stat-number total">
+                    0
+                </div>
+
+                <div class="stat-label">
+                    ROUNDS
+                </div>
+            </div>
+
+            <div class="stat">
+                <div
+                    id="experimentBotWins"
+                    class="stat-number loss">
+                    0
+                </div>
+
+                <div class="stat-label">
+                    BOT WINS
+                </div>
+            </div>
+
+            <div class="stat">
+                <div
+                    id="experimentPlayerWins"
+                    class="stat-number win">
+                    0
+                </div>
+
+                <div class="stat-label">
+                    YOUR WINS
+                </div>
+            </div>
+
+            <div class="stat">
+                <div
+                    id="experimentDraws"
+                    class="stat-number draw">
+                    0
+                </div>
+
+                <div class="stat-label">
+                    DRAWS
+                </div>
+            </div>
+
+            <div class="stat">
+                <div
+                    id="experimentBotWinRate"
+                    class="stat-number rate">
+                    0%
+                </div>
+
+                <div class="stat-label">
+                    BOT WIN RATE
+                </div>
+            </div>
+
+            <div class="stat">
+                <div
+                    id="experimentCounterRate"
+                    class="stat-number rate">
+                    0%
+                </div>
+
+                <div class="stat-label">
+                    COUNTER RATE
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                Bot Response Matrix
+            </div>
+
+            <table class="matrix">
+
+                <thead>
+
+                    <tr>
+                        <th>Your Move</th>
+                        <th>Bot R</th>
+                        <th>Bot P</th>
+                        <th>Bot S</th>
+                        <th>Total</th>
+                        <th>Counter %</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td><strong>R</strong></td>
+                        <td id="RR">0</td>
+                        <td id="RP" class="counter">0</td>
+                        <td id="RS" class="non-counter">0</td>
+                        <td id="RTotal">0</td>
+                        <td id="RCounter">0%</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>P</strong></td>
+                        <td id="PR" class="non-counter">0</td>
+                        <td id="PP">0</td>
+                        <td id="PS" class="counter">0</td>
+                        <td id="PTotal">0</td>
+                        <td id="PCounter">0%</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>S</strong></td>
+                        <td id="SR" class="counter">0</td>
+                        <td id="SP" class="non-counter">0</td>
+                        <td id="SS">0</td>
+                        <td id="STotal">0</td>
+                        <td id="SCounter">0%</td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                Your Random Move Distribution
+            </div>
+
+            <div class="status-card">
+
+                <div class="status-row">
+                    <span>Rock</span>
+                    <strong id="freqR">0%</strong>
+                </div>
+
+                <div class="status-row">
+                    <span>Paper</span>
+                    <strong id="freqP">0%</strong>
+                </div>
+
+                <div class="status-row">
+                    <span>Scissors</span>
+                    <strong id="freqS">0%</strong>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="info">
+
+            <strong>What we are testing:</strong><br>
+
+            Your move is generated independently using
+            the browser's cryptographic random generator.
+
+            <br><br>
+
+            If the bot cannot see your current move and
+            behaves independently, each response should be
+            approximately 33.3% R, 33.3% P and 33.3% S
+            for each of your moves.
+
+            <br><br>
+
+            The three counter relationships are:
+
+            <strong>R → P</strong>,
+            <strong>P → S</strong>,
+            <strong>S → R</strong>.
+
+            <br><br>
+
+            A random bot should have an overall counter
+            rate close to <strong>33.3%</strong>.
+
+        </div>
+
+
+        <div class="controls">
+
+            <button
+                class="control-button"
+                onclick="experimentExportCSV()">
+                Export CSV
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     EXPERIMENT HISTORY
+========================================================= -->
+
+<section
+    id="experimentHistorySection"
+    class="section">
+
+    <div class="container">
+
+        <div class="history-header">
+
+            <h1>Experiment History</h1>
+
+            <div class="history-controls">
+
+                <button
+                    class="control-button"
+                    onclick="experimentUndo()">
+                    Undo
+                </button>
+
+                <button
+                    class="control-button"
+                    onclick="experimentExportCSV()">
+                    CSV
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div id="experimentHistory">
+
+            <div class="empty">
+                No experiment rounds recorded yet.
+            </div>
+
+        </div>
+
+
+        <div class="backup">
+
+            <h2>Experiment Backup & Restore</h2>
+
+            <p>
+                Save or restore the experimental dataset.
+                This data is completely separate from
+                the normal recorder.
+            </p>
+
+            <div class="backup-buttons">
+
+                <button onclick="experimentExportJSON()">
+                    Download Backup
+                </button>
+
+                <button
+                    onclick="document.getElementById('experimentImportFile').click()">
+                    Restore Backup
+                </button>
+
+                <input
+                    id="experimentImportFile"
+                    type="file"
+                    accept=".json"
+                    style="display:none"
+                    onchange="experimentImportJSON(event)">
+
+            </div>
+
+        </div>
+
+
+        <div class="controls">
+
+            <button
+                class="control-button danger"
+                onclick="clearExperiment()">
+                Clear Experiment
+            </button>
 
         </div>
 
@@ -607,28 +1380,47 @@ h1 {
 
 <script>
 
-/* =========================
+/* =========================================================
    DATA
-========================= */
+========================================================= */
 
-let games =
+/*
+    IMPORTANT:
+
+    Normal recorder:
+        rpsGames
+
+    Experiment:
+        rpsExperiment
+
+    They are completely separate.
+*/
+
+let normalGames =
     JSON.parse(
         localStorage.getItem("rpsGames")
     ) || [];
 
-let playerMove = null;
+let experimentGames =
+    JSON.parse(
+        localStorage.getItem("rpsExperiment")
+    ) || [];
 
 
-/* =========================
-   NAVIGATION
-========================= */
+let normalPlayerMove = null;
 
-function showSection(sectionId) {
+let currentMove = null;
 
-    /*
-     Do not lose an unfinished move.
-     It stays stored in playerMove.
-    */
+let paused = false;
+
+const TARGET_ROUNDS = 300;
+
+
+/* =========================================================
+   MAIN NAVIGATION
+========================================================= */
+
+function showMainSection(sectionId) {
 
     document
         .querySelectorAll(".section")
@@ -642,6 +1434,10 @@ function showSection(sectionId) {
         .classList.add("active");
 
 
+    /*
+        Main home navigation.
+    */
+
     document
         .querySelectorAll("nav button")
         .forEach(button => {
@@ -649,7 +1445,7 @@ function showSection(sectionId) {
         });
 
 
-    if (sectionId === "home") {
+    if (sectionId === "mainHome") {
 
         document
             .getElementById("navHome")
@@ -657,28 +1453,61 @@ function showSection(sectionId) {
 
     }
 
-    else if (sectionId === "stats") {
+    else if (
+        sectionId === "normalHome" ||
+        sectionId === "normalStats" ||
+        sectionId === "normalHistorySection"
+    ) {
 
         document
-            .getElementById("navStats")
+            .getElementById("navNormal")
             .classList.add("active");
 
     }
 
-    else if (sectionId === "historySection") {
+    else if (
+        sectionId === "experimentHome" ||
+        sectionId === "experimentStats" ||
+        sectionId === "experimentHistorySection"
+    ) {
 
         document
-            .getElementById("navHistory")
+            .getElementById("navExperiment")
             .classList.add("active");
 
     }
+
+
+    /*
+        Update whichever mode was opened.
+    */
+
+    updateAllUI();
 
 }
 
 
-/* =========================
-   RESULT
-========================= */
+/* =========================================================
+   MODE NAVIGATION
+========================================================= */
+
+function showNormalPage(page) {
+
+    showMainSection(page);
+
+}
+
+
+function showExperimentPage(page) {
+
+    showMainSection(page);
+
+}
+
+
+/* =========================================================
+   NORMAL RESULT
+========================================================= */
 
 function getResult(player, bot) {
 
@@ -692,62 +1521,66 @@ function getResult(player, bot) {
         (player === "P" && bot === "R") ||
         (player === "S" && bot === "P")
     ) {
+
         return "WIN";
+
     }
 
 
     return "LOSS";
+
 }
 
 
-/* =========================
-   SAVE
-========================= */
+/* =========================================================
+   NORMAL SAVE
+========================================================= */
 
-function save() {
+function saveNormal() {
 
     localStorage.setItem(
         "rpsGames",
-        JSON.stringify(games)
+        JSON.stringify(normalGames)
     );
 
 }
 
 
-/* =========================
-   RECORD
-========================= */
+/* =========================================================
+   NORMAL RECORDER
+========================================================= */
 
-function choose(move) {
+function normalChoose(move) {
 
     /*
-     FIRST CLICK
-     = YOUR MOVE
+        FIRST CLICK = PLAYER MOVE
     */
 
-    if (playerMove === null) {
+    if (normalPlayerMove === null) {
 
-        playerMove = move;
+        normalPlayerMove = move;
 
         document.getElementById(
-            "status"
+            "normalStatus"
         ).textContent =
             "BOT MOVE";
 
         return;
+
     }
 
 
     /*
-     SECOND CLICK
-     = BOT MOVE
+        SECOND CLICK = BOT MOVE
     */
 
     const game = {
 
-        player: playerMove,
+        player:
+            normalPlayerMove,
 
-        bot: move,
+        bot:
+            move,
 
         date:
             new Date().toISOString()
@@ -755,8 +1588,26 @@ function choose(move) {
     };
 
 
-    games.push(game);
+    normalGames.push(game);
 
+    normalPlayerMove = null;
+
+    saveNormal();
+
+    showNormalLastGame(
+        game
+    );
+
+    updateAllUI();
+
+}
+
+
+/* =========================================================
+   NORMAL LAST GAME
+========================================================= */
+
+function showNormalLastGame(game) {
 
     const result =
         getResult(
@@ -765,30 +1616,9 @@ function choose(move) {
         );
 
 
-    playerMove = null;
-
-
-    save();
-
-    updateUI();
-
-    showLastGame(
-        game,
-        result
-    );
-
-}
-
-
-/* =========================
-   LAST GAME
-========================= */
-
-function showLastGame(game, result) {
-
     const element =
         document.getElementById(
-            "lastGame"
+            "normalLastGame"
         );
 
 
@@ -802,50 +1632,20 @@ function showLastGame(game, result) {
 }
 
 
-/* =========================
-   UPDATE UI
-========================= */
+/* =========================================================
+   NORMAL STATS
+========================================================= */
 
-function updateUI() {
-
-    updateStats();
-
-    updateHistory();
-
-
-    if (playerMove === null) {
-
-        document.getElementById(
-            "status"
-        ).textContent =
-            "YOUR MOVE";
-
-    }
-
-    else {
-
-        document.getElementById(
-            "status"
-        ).textContent =
-            "BOT MOVE";
-
-    }
-
-}
-
-
-/* =========================
-   STATS
-========================= */
-
-function updateStats() {
+function updateNormalStats() {
 
     let wins = 0;
+
     let losses = 0;
+
     let draws = 0;
 
 
-    games.forEach(game => {
+    normalGames.forEach(game => {
 
         const result =
             getResult(
@@ -870,101 +1670,69 @@ function updateStats() {
 
 
     document.getElementById(
-        "totalGames"
+        "normalTotalGames"
     ).textContent =
-        games.length;
+        normalGames.length;
 
 
     document.getElementById(
-        "wins"
+        "normalWins"
     ).textContent =
         wins;
 
 
     document.getElementById(
-        "losses"
+        "normalLosses"
     ).textContent =
         losses;
 
 
     document.getElementById(
-        "draws"
+        "normalDraws"
     ).textContent =
         draws;
 
 
-    /*
-     Win rate excludes draws.
-    */
-
-    const decidedGames =
+    const decided =
         wins + losses;
 
 
     const winRate =
-        decidedGames === 0
+        decided === 0
             ? 0
-            : (wins / decidedGames) * 100;
+            : wins / decided * 100;
 
 
     document.getElementById(
-        "winRate"
+        "normalWinRate"
     ).textContent =
-        `${winRate.toFixed(1)}%`;
+        winRate.toFixed(1) + "%";
+
+
+    document.getElementById(
+        "normalCount"
+    ).textContent =
+        normalGames.length;
 
 }
 
 
-/* =========================
-   DATE
-========================= */
+/* =========================================================
+   NORMAL HISTORY
+========================================================= */
 
-function formatDate(dateString) {
-
-    if (!dateString) {
-        return "Unknown date";
-    }
-
-
-    const date =
-        new Date(dateString);
-
-
-    return date.toLocaleString([], {
-
-        year: "numeric",
-
-        month: "2-digit",
-
-        day: "2-digit",
-
-        hour: "2-digit",
-
-        minute: "2-digit",
-
-        second: "2-digit"
-
-    });
-
-}
-
-
-/* =========================
-   HISTORY
-========================= */
-
-function updateHistory() {
+function updateNormalHistory() {
 
     const history =
         document.getElementById(
-            "history"
+            "normalHistory"
         );
 
 
     history.innerHTML = "";
 
 
-    if (games.length === 0) {
+    if (normalGames.length === 0) {
 
         history.innerHTML =
             `<div class="empty">
@@ -972,178 +1740,154 @@ function updateHistory() {
             </div>`;
 
         return;
+
     }
 
 
-    games.forEach((game, index) => {
+    normalGames.forEach(
+        (game, index) => {
 
-        const result =
-            getResult(
-                game.player,
-                game.bot
+            const result =
+                getResult(
+                    game.player,
+                    game.bot
+                );
+
+
+            const element =
+                document.createElement(
+                    "div"
+                );
+
+
+            element.className =
+                "game";
+
+
+            element.innerHTML = `
+
+                <span class="game-number">
+                    ${index + 1}.
+                </span>
+
+                <span class="moves">
+                    ${game.player} ${game.bot}
+                </span>
+
+                <span class="result ${result.toLowerCase()}">
+                    ${result}
+                </span>
+
+                <span class="date">
+                    ${formatDate(game.date)}
+                </span>
+
+            `;
+
+
+            history.appendChild(
+                element
             );
 
-
-        const gameElement =
-            document.createElement(
-                "div"
-            );
-
-
-        gameElement.className =
-            "game";
-
-
-        const number =
-            document.createElement(
-                "span"
-            );
-
-        number.className =
-            "game-number";
-
-        number.textContent =
-            `${index + 1}.`;
-
-
-        const moves =
-            document.createElement(
-                "span"
-            );
-
-        moves.className =
-            "moves";
-
-        moves.textContent =
-            `${game.player} ${game.bot}`;
-
-
-        const resultElement =
-            document.createElement(
-                "span"
-            );
-
-        resultElement.className =
-            `result ${result.toLowerCase()}`;
-
-        resultElement.textContent =
-            result;
-
-
-        const date =
-            document.createElement(
-                "span"
-            );
-
-        date.className =
-            "date";
-
-        date.textContent =
-            formatDate(game.date);
-
-
-        gameElement.appendChild(number);
-
-        gameElement.appendChild(moves);
-
-        gameElement.appendChild(
-            resultElement
-        );
-
-        gameElement.appendChild(date);
-
-
-        history.appendChild(
-            gameElement
-        );
-
-    });
+        }
+    );
 
 }
 
 
-/* =========================
-   UNDO
-========================= */
+/* =========================================================
+   NORMAL UNDO
+========================================================= */
 
-function undoLast() {
+function normalUndo() {
 
     /*
-     If waiting for bot,
-     cancel player's move.
+        If waiting for bot,
+        cancel unfinished player move.
     */
 
-    if (playerMove !== null) {
+    if (normalPlayerMove !== null) {
 
-        playerMove = null;
+        normalPlayerMove = null;
 
         document.getElementById(
-            "status"
+            "normalStatus"
         ).textContent =
             "YOUR MOVE";
 
         return;
+
     }
 
 
-    if (games.length === 0) {
+    if (normalGames.length === 0) {
         return;
     }
 
 
-    games.pop();
-
-    save();
-
-    updateUI();
-
-}
-
-
-/* =========================
-   CLEAR
-========================= */
-
-function clearData() {
-
     if (
         !confirm(
-            "Delete ALL recorded games?"
+            "Remove the last normal game?"
         )
     ) {
         return;
     }
 
 
-    games = [];
+    normalGames.pop();
 
-    playerMove = null;
+    saveNormal();
 
-    save();
-
-    updateUI();
-
-
-    document.getElementById(
-        "lastGame"
-    ).textContent = "";
+    updateAllUI();
 
 }
 
 
-/* =========================
-   CSV EXPORT
-========================= */
+/* =========================================================
+   NORMAL CLEAR
+========================================================= */
 
-function exportCSV() {
+function normalClear() {
 
-    if (games.length === 0) {
+    if (
+        !confirm(
+            "DELETE ALL NORMAL RECORDER DATA?"
+        )
+    ) {
+        return;
+    }
+
+
+    normalGames = [];
+
+    normalPlayerMove = null;
+
+    saveNormal();
+
+    document.getElementById(
+        "normalLastGame"
+    ).textContent = "";
+
+
+    updateAllUI();
+
+}
+
+
+/* =========================================================
+   NORMAL CSV
+========================================================= */
+
+function normalExportCSV() {
+
+    if (normalGames.length === 0) {
 
         alert(
-            "No games recorded."
+            "No normal recorder data."
         );
 
         return;
+
     }
 
 
@@ -1152,93 +1896,101 @@ function exportCSV() {
 
 
     const rows =
-        games.map(
+        normalGames.map(
             (game, index) => {
 
-                const result =
+                return [
+
+                    index + 1,
+
+                    game.player,
+
+                    game.bot,
+
                     getResult(
                         game.player,
                         game.bot
-                    );
+                    ),
 
-
-                return [
-                    index + 1,
-                    game.player,
-                    game.bot,
-                    result,
                     game.date || ""
+
                 ].join(",");
 
             }
         );
 
 
-    const csv =
+    downloadFile(
+
         header +
         "\n" +
-        rows.join("\n");
+        rows.join("\n"),
 
+        "rps_normal_games.csv",
 
-    downloadFile(
-        csv,
-        "rps_games.csv",
         "text/csv"
+
     );
 
 }
 
 
-/* =========================
-   JSON BACKUP
-========================= */
+/* =========================================================
+   NORMAL JSON
+========================================================= */
 
-function exportJSON() {
+function normalExportJSON() {
 
-    if (games.length === 0) {
+    if (normalGames.length === 0) {
 
         alert(
-            "No games recorded."
+            "No normal recorder data."
         );
 
         return;
+
     }
 
 
     const backup = {
 
-        version: 1,
+        type:
+            "RPS Normal Recorder",
+
+        version:
+            1,
 
         exportedAt:
             new Date().toISOString(),
 
-        games: games
+        games:
+            normalGames
 
     };
 
 
-    const json =
+    downloadFile(
+
         JSON.stringify(
             backup,
             null,
             2
-        );
+        ),
 
+        "rps_normal_backup.json",
 
-    downloadFile(
-        json,
-        "rps_backup.json",
         "application/json"
+
     );
 
 }
 
 
-/* =========================
-   IMPORT JSON
-========================= */
+/* =========================================================
+   NORMAL IMPORT
+========================================================= */
 
-function importJSON(event) {
+function normalImportJSON(event) {
 
     const file =
         event.target.files[0];
@@ -1264,58 +2016,30 @@ function importJSON(event) {
                     );
 
 
-                let importedGames;
+                const imported =
+                    Array.isArray(data)
+                        ? data
+                        : data.games;
 
-
-                /*
-                 Support both:
-                 { games: [...] }
-                 and
-                 [...] 
-                */
 
                 if (
-                    Array.isArray(data)
-                ) {
-
-                    importedGames =
-                        data;
-
-                }
-
-                else if (
-                    Array.isArray(
-                        data.games
+                    !Array.isArray(
+                        imported
                     )
                 ) {
-
-                    importedGames =
-                        data.games;
-
+                    throw new Error();
                 }
 
-                else {
-
-                    throw new Error(
-                        "Invalid backup"
-                    );
-
-                }
-
-
-                /*
-                 Validate every game.
-                */
 
                 const valid =
-                    importedGames.every(
+                    imported.every(
                         game =>
                             game &&
-                            ["P", "R", "S"]
+                            ["P","R","S"]
                                 .includes(
                                     game.player
                                 ) &&
-                            ["P", "R", "S"]
+                            ["P","R","S"]
                                 .includes(
                                     game.bot
                                 )
@@ -1323,39 +2047,34 @@ function importJSON(event) {
 
 
                 if (!valid) {
-
-                    throw new Error(
-                        "Invalid game data"
-                    );
-
+                    throw new Error();
                 }
 
 
                 if (
                     !confirm(
-                        `Replace current data with ${importedGames.length} imported games?`
+                        `Replace normal data with ${imported.length} games?`
                     )
                 ) {
-
-                    event.target.value = "";
-
                     return;
                 }
 
 
-                games =
-                    importedGames;
+                normalGames =
+                    imported;
 
 
-                playerMove = null;
+                normalPlayerMove =
+                    null;
 
-                save();
 
-                updateUI();
+                saveNormal();
+
+                updateAllUI();
 
 
                 alert(
-                    `Successfully restored ${games.length} games.`
+                    `Restored ${normalGames.length} normal games.`
                 );
 
             }
@@ -1363,11 +2082,10 @@ function importJSON(event) {
             catch(error) {
 
                 alert(
-                    "Invalid backup file."
+                    "Invalid normal recorder backup."
                 );
 
             }
-
 
             event.target.value = "";
 
@@ -1379,9 +2097,1032 @@ function importJSON(event) {
 }
 
 
-/* =========================
-   DOWNLOAD HELPER
-========================= */
+/* =========================================================
+   EXPERIMENT RANDOMIZATION
+========================================================= */
+
+function randomMove() {
+
+    const values =
+        new Uint32Array(1);
+
+
+    crypto.getRandomValues(
+        values
+    );
+
+
+    return [
+        "R",
+        "P",
+        "S"
+    ][
+        values[0] % 3
+    ];
+
+}
+
+
+/* =========================================================
+   EXPERIMENT SAVE
+========================================================= */
+
+function saveExperiment() {
+
+    localStorage.setItem(
+        "rpsExperiment",
+        JSON.stringify(
+            experimentGames
+        )
+    );
+
+}
+
+
+/* =========================================================
+   GENERATE EXPERIMENT MOVE
+========================================================= */
+
+function generateNextMove() {
+
+    if (paused) {
+        return;
+    }
+
+
+    if (
+        experimentGames.length >=
+        TARGET_ROUNDS
+    ) {
+
+        currentMove = null;
+
+        document.getElementById(
+            "requiredMove"
+        ).textContent =
+            "✓";
+
+
+        disableBotButtons(
+            true
+        );
+
+
+        return;
+
+    }
+
+
+    currentMove =
+        randomMove();
+
+
+    document.getElementById(
+        "requiredMove"
+    ).textContent =
+        currentMove;
+
+
+    document.getElementById(
+        "experimentRoundNumber"
+    ).textContent =
+        experimentGames.length + 1;
+
+
+    disableBotButtons(
+        false
+    );
+
+}
+
+
+/* =========================================================
+   RECORD EXPERIMENT BOT MOVE
+========================================================= */
+
+function recordBot(botMove) {
+
+    if (paused) {
+        return;
+    }
+
+
+    if (currentMove === null) {
+        return;
+    }
+
+
+    const playerMove =
+        currentMove;
+
+
+    const result =
+        getResult(
+            playerMove,
+            botMove
+        );
+
+
+    const game = {
+
+        round:
+            experimentGames.length + 1,
+
+        player:
+            playerMove,
+
+        bot:
+            botMove,
+
+        result:
+            result,
+
+        timestamp:
+            new Date().toISOString()
+
+    };
+
+
+    experimentGames.push(
+        game
+    );
+
+
+    saveExperiment();
+
+
+    showExperimentResult(
+        game
+    );
+
+
+    currentMove =
+        null;
+
+
+    updateAllUI();
+
+
+    /*
+        Generate only after the
+        current round is recorded.
+    */
+
+    setTimeout(
+        generateNextMove,
+        250
+    );
+
+}
+
+
+/* =========================================================
+   EXPERIMENT RESULT
+========================================================= */
+
+function showExperimentResult(game) {
+
+    const element =
+        document.getElementById(
+            "lastResult"
+        );
+
+
+    element.className =
+        "last-result";
+
+
+    if (
+        game.result === "WIN"
+    ) {
+
+        element.classList.add(
+            "last-win"
+        );
+
+
+        element.textContent =
+            `Round ${game.round}: ${game.player} → ${game.bot} — YOU WIN`;
+
+    }
+
+    else if (
+        game.result === "LOSS"
+    ) {
+
+        element.classList.add(
+            "last-loss"
+        );
+
+
+        element.textContent =
+            `Round ${game.round}: ${game.player} → ${game.bot} — BOT WINS`;
+
+    }
+
+    else {
+
+        element.classList.add(
+            "last-draw"
+        );
+
+
+        element.textContent =
+            `Round ${game.round}: ${game.player} → ${game.bot} — DRAW`;
+
+    }
+
+}
+
+
+/* =========================================================
+   EXPERIMENT BUTTONS
+========================================================= */
+
+function disableBotButtons(disabled) {
+
+    document.getElementById(
+        "botR"
+    ).disabled =
+        disabled;
+
+
+    document.getElementById(
+        "botP"
+    ).disabled =
+        disabled;
+
+
+    document.getElementById(
+        "botS"
+    ).disabled =
+        disabled;
+
+}
+
+
+/* =========================================================
+   EXPERIMENT PAUSE
+========================================================= */
+
+function togglePause() {
+
+    paused =
+        !paused;
+
+
+    const button =
+        document.getElementById(
+            "pauseButton"
+        );
+
+
+    if (paused) {
+
+        button.textContent =
+            "Resume";
+
+
+        disableBotButtons(
+            true
+        );
+
+    }
+
+    else {
+
+        button.textContent =
+            "Pause";
+
+
+        if (
+            currentMove === null
+        ) {
+
+            generateNextMove();
+
+        }
+
+        else {
+
+            disableBotButtons(
+                false
+            );
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   EXPERIMENT STATS
+========================================================= */
+
+function updateExperimentStats() {
+
+    let wins = 0;
+
+    let losses = 0;
+
+    let draws = 0;
+
+
+    const matrix = {
+
+        R: {
+            R: 0,
+            P: 0,
+            S: 0
+        },
+
+        P: {
+            R: 0,
+            P: 0,
+            S: 0
+        },
+
+        S: {
+            R: 0,
+            P: 0,
+            S: 0
+        }
+
+    };
+
+
+    experimentGames.forEach(
+        game => {
+
+            if (
+                game.result === "WIN"
+            ) {
+                wins++;
+            }
+
+            else if (
+                game.result === "LOSS"
+            ) {
+                losses++;
+            }
+
+            else {
+                draws++;
+            }
+
+
+            if (
+                matrix[game.player] &&
+                matrix[game.player][game.bot]
+                !== undefined
+            ) {
+
+                matrix[
+                    game.player
+                ][
+                    game.bot
+                ]++;
+
+            }
+
+        }
+    );
+
+
+    const total =
+        experimentGames.length;
+
+
+    document.getElementById(
+        "experimentTotalGames"
+    ).textContent =
+        total;
+
+
+    document.getElementById(
+        "experimentBotWins"
+    ).textContent =
+        losses;
+
+
+    document.getElementById(
+        "experimentPlayerWins"
+    ).textContent =
+        wins;
+
+
+    document.getElementById(
+        "experimentDraws"
+    ).textContent =
+        draws;
+
+
+    const botWinRate =
+        total === 0
+            ? 0
+            : losses / total * 100;
+
+
+    document.getElementById(
+        "experimentBotWinRate"
+    ).textContent =
+        botWinRate.toFixed(1) + "%";
+
+
+    /*
+        Matrix
+    */
+
+    const ids = [
+
+        ["RR", matrix.R.R],
+        ["RP", matrix.R.P],
+        ["RS", matrix.R.S],
+
+        ["PR", matrix.P.R],
+        ["PP", matrix.P.P],
+        ["PS", matrix.P.S],
+
+        ["SR", matrix.S.R],
+        ["SP", matrix.S.P],
+        ["SS", matrix.S.S]
+
+    ];
+
+
+    ids.forEach(
+        item => {
+
+            document.getElementById(
+                item[0]
+            ).textContent =
+                item[1];
+
+        }
+    );
+
+
+    const rTotal =
+        matrix.R.R +
+        matrix.R.P +
+        matrix.R.S;
+
+
+    const pTotal =
+        matrix.P.R +
+        matrix.P.P +
+        matrix.P.S;
+
+
+    const sTotal =
+        matrix.S.R +
+        matrix.S.P +
+        matrix.S.S;
+
+
+    document.getElementById(
+        "RTotal"
+    ).textContent =
+        rTotal;
+
+
+    document.getElementById(
+        "PTotal"
+    ).textContent =
+        pTotal;
+
+
+    document.getElementById(
+        "STotal"
+    ).textContent =
+        sTotal;
+
+
+    const rCounter =
+        rTotal === 0
+            ? 0
+            : matrix.R.P / rTotal * 100;
+
+
+    const pCounter =
+        pTotal === 0
+            ? 0
+            : matrix.P.S / pTotal * 100;
+
+
+    const sCounter =
+        sTotal === 0
+            ? 0
+            : matrix.S.R / sTotal * 100;
+
+
+    document.getElementById(
+        "RCounter"
+    ).textContent =
+        rCounter.toFixed(1) + "%";
+
+
+    document.getElementById(
+        "PCounter"
+    ).textContent =
+        pCounter.toFixed(1) + "%";
+
+
+    document.getElementById(
+        "SCounter"
+    ).textContent =
+        sCounter.toFixed(1) + "%";
+
+
+    const counters =
+        matrix.R.P +
+        matrix.P.S +
+        matrix.S.R;
+
+
+    const counterRate =
+        total === 0
+            ? 0
+            : counters / total * 100;
+
+
+    document.getElementById(
+        "experimentCounterRate"
+    ).textContent =
+        counterRate.toFixed(1) + "%";
+
+
+    /*
+        Random move distribution
+    */
+
+    document.getElementById(
+        "freqR"
+    ).textContent =
+        total === 0
+            ? "0%"
+            : (
+                rTotal /
+                total *
+                100
+            ).toFixed(1) + "%";
+
+
+    document.getElementById(
+        "freqP"
+    ).textContent =
+        total === 0
+            ? "0%"
+            : (
+                pTotal /
+                total *
+                100
+            ).toFixed(1) + "%";
+
+
+    document.getElementById(
+        "freqS"
+    ).textContent =
+        total === 0
+            ? "0%"
+            : (
+                sTotal /
+                total *
+                100
+            ).toFixed(1) + "%";
+
+
+    document.getElementById(
+        "experimentCount"
+    ).textContent =
+        experimentGames.length;
+
+}
+
+
+/* =========================================================
+   EXPERIMENT HISTORY
+========================================================= */
+
+function updateExperimentHistory() {
+
+    const history =
+        document.getElementById(
+            "experimentHistory"
+        );
+
+
+    history.innerHTML = "";
+
+
+    if (
+        experimentGames.length === 0
+    ) {
+
+        history.innerHTML =
+            `<div class="empty">
+                No experiment rounds recorded yet.
+            </div>`;
+
+        return;
+
+    }
+
+
+    /*
+        Newest first.
+    */
+
+    [
+        ...experimentGames
+    ]
+    .reverse()
+    .forEach(
+        game => {
+
+            const element =
+                document.createElement(
+                    "div"
+                );
+
+
+            element.className =
+                "game";
+
+
+            element.innerHTML = `
+
+                <span class="game-number">
+                    ${game.round}.
+                </span>
+
+                <span class="moves">
+                    ${game.player} → ${game.bot}
+                </span>
+
+                <span class="result ${game.result.toLowerCase()}">
+                    ${game.result}
+                </span>
+
+                <span class="date">
+                    ${formatDate(game.timestamp)}
+                </span>
+
+            `;
+
+
+            history.appendChild(
+                element
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   EXPERIMENT UNDO
+========================================================= */
+
+function experimentUndo() {
+
+    if (
+        experimentGames.length === 0
+    ) {
+        return;
+    }
+
+
+    if (
+        !confirm(
+            "Remove the last experiment round?"
+        )
+    ) {
+        return;
+    }
+
+
+    experimentGames.pop();
+
+
+    saveExperiment();
+
+
+    currentMove =
+        null;
+
+
+    updateAllUI();
+
+
+    generateNextMove();
+
+}
+
+
+/* =========================================================
+   EXPERIMENT CLEAR
+========================================================= */
+
+function clearExperiment() {
+
+    if (
+        !confirm(
+            "DELETE ALL EXPERIMENT DATA?"
+        )
+    ) {
+        return;
+    }
+
+
+    experimentGames = [];
+
+    currentMove = null;
+
+
+    saveExperiment();
+
+
+    document.getElementById(
+        "lastResult"
+    ).textContent = "";
+
+
+    updateAllUI();
+
+
+    generateNextMove();
+
+}
+
+
+/* =========================================================
+   EXPERIMENT CSV
+========================================================= */
+
+function experimentExportCSV() {
+
+    if (
+        experimentGames.length === 0
+    ) {
+
+        alert(
+            "No experiment data."
+        );
+
+        return;
+
+    }
+
+
+    const header =
+        "Round,Player,Bot,Result,Timestamp";
+
+
+    const rows =
+        experimentGames.map(
+            game => {
+
+                return [
+
+                    game.round,
+
+                    game.player,
+
+                    game.bot,
+
+                    game.result,
+
+                    game.timestamp
+
+                ].join(",");
+
+            }
+        );
+
+
+    downloadFile(
+
+        header +
+        "\n" +
+        rows.join("\n"),
+
+        "rps_anti_cheating_experiment.csv",
+
+        "text/csv"
+
+    );
+
+}
+
+
+/* =========================================================
+   EXPERIMENT JSON
+========================================================= */
+
+function experimentExportJSON() {
+
+    if (
+        experimentGames.length === 0
+    ) {
+
+        alert(
+            "No experiment data."
+        );
+
+        return;
+
+    }
+
+
+    const backup = {
+
+        type:
+            "RPS Anti-Cheating Experiment",
+
+        version:
+            2,
+
+        targetRounds:
+            TARGET_ROUNDS,
+
+        exportedAt:
+            new Date().toISOString(),
+
+        games:
+            experimentGames
+
+    };
+
+
+    downloadFile(
+
+        JSON.stringify(
+            backup,
+            null,
+            2
+        ),
+
+        "rps_anti_cheating_backup.json",
+
+        "application/json"
+
+    );
+
+}
+
+
+/* =========================================================
+   EXPERIMENT IMPORT
+========================================================= */
+
+function experimentImportJSON(event) {
+
+    const file =
+        event.target.files[0];
+
+
+    if (!file) {
+        return;
+    }
+
+
+    const reader =
+        new FileReader();
+
+
+    reader.onload =
+        function(e) {
+
+            try {
+
+                const data =
+                    JSON.parse(
+                        e.target.result
+                    );
+
+
+                const imported =
+                    Array.isArray(data)
+                        ? data
+                        : data.games;
+
+
+                if (
+                    !Array.isArray(
+                        imported
+                    )
+                ) {
+                    throw new Error();
+                }
+
+
+                const valid =
+                    imported.every(
+                        game =>
+                            game &&
+                            ["R","P","S"]
+                                .includes(
+                                    game.player
+                                ) &&
+                            ["R","P","S"]
+                                .includes(
+                                    game.bot
+                                )
+                    );
+
+
+                if (!valid) {
+                    throw new Error();
+                }
+
+
+                if (
+                    !confirm(
+                        `Replace experiment data with ${imported.length} rounds?`
+                    )
+                ) {
+                    return;
+                }
+
+
+                experimentGames =
+                    imported;
+
+
+                currentMove =
+                    null;
+
+
+                saveExperiment();
+
+
+                updateAllUI();
+
+
+                generateNextMove();
+
+
+                alert(
+                    `Restored ${experimentGames.length} experiment rounds.`
+                );
+
+            }
+
+            catch(error) {
+
+                alert(
+                    "Invalid experiment backup."
+                );
+
+            }
+
+
+            event.target.value = "";
+
+        };
+
+
+    reader.readAsText(
+        file
+    );
+
+}
+
+
+/* =========================================================
+   DATE
+========================================================= */
+
+function formatDate(dateString) {
+
+    if (!dateString) {
+        return "Unknown";
+    }
+
+
+    return new Date(
+        dateString
+    ).toLocaleString(
+        [],
+        {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit"
+        }
+    );
+
+}
+
+
+/* =========================================================
+   DOWNLOAD
+========================================================= */
 
 function downloadFile(
     content,
@@ -1392,12 +3133,17 @@ function downloadFile(
     const blob =
         new Blob(
             [content],
-            { type: type }
+            {
+                type:
+                    type
+            }
         );
 
 
     const url =
-        URL.createObjectURL(blob);
+        URL.createObjectURL(
+            blob
+        );
 
 
     const a =
@@ -1406,25 +3152,120 @@ function downloadFile(
         );
 
 
-    a.href = url;
+    a.href =
+        url;
 
-    a.download = filename;
 
-    document.body.appendChild(a);
+    a.download =
+        filename;
+
+
+    document.body.appendChild(
+        a
+    );
+
 
     a.click();
+
 
     a.remove();
 
 
-    URL.revokeObjectURL(url);
+    URL.revokeObjectURL(
+        url
+    );
 
 }
 
 
-/* =========================
-   KEYBOARD
-========================= */
+/* =========================================================
+   UPDATE ALL UI
+========================================================= */
+
+function updateAllUI() {
+
+    /*
+        Normal
+    */
+
+    updateNormalStats();
+
+    updateNormalHistory();
+
+
+    /*
+        Experiment
+    */
+
+    updateExperimentStats();
+
+    updateExperimentHistory();
+
+
+    /*
+        Normal status
+    */
+
+    document.getElementById(
+        "normalStatus"
+    ).textContent =
+        normalPlayerMove === null
+            ? "YOUR MOVE"
+            : "BOT MOVE";
+
+
+    /*
+        Experiment round
+    */
+
+    document.getElementById(
+        "experimentRoundNumber"
+    ).textContent =
+        Math.min(
+            experimentGames.length + 1,
+            TARGET_ROUNDS
+        );
+
+
+    document.getElementById(
+        "experimentTargetNumber"
+    ).textContent =
+        TARGET_ROUNDS;
+
+
+    /*
+        Home counts
+    */
+
+    document.getElementById(
+        "normalCount"
+    ).textContent =
+        normalGames.length;
+
+
+    document.getElementById(
+        "experimentCount"
+    ).textContent =
+        experimentGames.length;
+
+}
+
+
+/* =========================================================
+   KEYBOARD SHORTCUTS
+========================================================= */
+
+/*
+    Normal Recorder:
+    First R/P/S = your move.
+    Second R/P/S = bot move.
+
+    Experiment:
+    R/P/S = bot response.
+
+    Keyboard shortcuts are only active for
+    the currently selected mode.
+*/
 
 document.addEventListener(
     "keydown",
@@ -1435,21 +3276,42 @@ document.addEventListener(
 
 
         if (
-            key === "P" ||
-            key === "R" ||
-            key === "S"
+            key !== "R" &&
+            key !== "P" &&
+            key !== "S"
         ) {
+            return;
+        }
 
-            choose(key);
+
+        const normalActive =
+            document
+                .getElementById(
+                    "normalHome"
+                )
+                .classList
+                .contains("active");
+
+
+        const experimentActive =
+            document
+                .getElementById(
+                    "experimentHome"
+                )
+                .classList
+                .contains("active");
+
+
+        if (normalActive) {
+
+            normalChoose(key);
 
         }
 
 
-        if (
-            event.key === "Backspace"
-        ) {
+        else if (experimentActive) {
 
-            undoLast();
+            recordBot(key);
 
         }
 
@@ -1457,13 +3319,70 @@ document.addEventListener(
 );
 
 
-/* =========================
-   START
-========================= */
+/*
+    Backspace:
 
-updateUI();
+    Normal mode:
+    undo/cancel.
+
+    Experiment:
+    undo last experiment round.
+*/
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (
+            event.key !== "Backspace"
+        ) {
+            return;
+        }
+
+
+        const normalActive =
+            document
+                .getElementById(
+                    "normalHome"
+                )
+                .classList
+                .contains("active");
+
+
+        const experimentActive =
+            document
+                .getElementById(
+                    "experimentHome"
+                )
+                .classList
+                .contains("active");
+
+
+        if (normalActive) {
+
+            normalUndo();
+
+        }
+
+        else if (experimentActive) {
+
+            experimentUndo();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   INITIALIZATION
+========================================================= */
+
+updateAllUI();
+
+generateNextMove();
 
 </script>
 
 </body>
-</html>
+    </html>
