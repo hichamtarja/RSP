@@ -1,0 +1,1469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RPS Recorder</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: #111;
+    color: white;
+    font-family: Arial, sans-serif;
+    user-select: none;
+}
+
+/* =========================
+   NAVIGATION
+========================= */
+
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: #181818;
+    border-bottom: 1px solid #292929;
+    display: flex;
+    justify-content: center;
+    z-index: 100;
+}
+
+nav button {
+    flex: 1;
+    max-width: 180px;
+    border: none;
+    background: transparent;
+    color: #777;
+    font-size: 15px;
+}
+
+nav button.active {
+    background: #222;
+    color: white;
+}
+
+
+/* =========================
+   SECTIONS
+========================= */
+
+.section {
+    display: none;
+    min-height: 100vh;
+    padding: 80px 20px 30px;
+}
+
+.section.active {
+    display: block;
+}
+
+.container {
+    width: 100%;
+    max-width: 650px;
+    margin: auto;
+}
+
+
+/* =========================
+   HOME
+========================= */
+
+#home {
+    align-items: center;
+    justify-content: center;
+}
+
+#home.active {
+    display: flex;
+}
+
+.recorder {
+    width: 100%;
+    text-align: center;
+}
+
+#status {
+    font-size: 20px;
+    color: #aaa;
+    margin-bottom: 30px;
+}
+
+.buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.rps-button {
+    flex: 1;
+    height: 120px;
+    font-size: 48px;
+    font-weight: bold;
+    border: none;
+    border-radius: 18px;
+    background: #222;
+    color: white;
+    cursor: pointer;
+}
+
+.rps-button:active {
+    transform: scale(0.94);
+    background: #444;
+}
+
+
+/* =========================
+   LAST GAME
+========================= */
+
+#lastGame {
+    margin-top: 25px;
+    color: #777;
+    font-size: 14px;
+    min-height: 20px;
+}
+
+.last-win {
+    color: #4caf50 !important;
+}
+
+.last-loss {
+    color: #f44336 !important;
+}
+
+.last-draw {
+    color: #ffc107 !important;
+}
+
+
+/* =========================
+   STATS
+========================= */
+
+h1 {
+    margin-top: 0;
+    margin-bottom: 25px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.stat {
+    background: #1c1c1c;
+    border-radius: 15px;
+    padding: 25px 10px;
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 36px;
+    font-weight: bold;
+}
+
+.stat-label {
+    margin-top: 8px;
+    color: #888;
+    font-size: 13px;
+}
+
+.win {
+    color: #4caf50;
+}
+
+.loss {
+    color: #f44336;
+}
+
+.draw {
+    color: #ffc107;
+}
+
+.total {
+    color: white;
+}
+
+.winrate {
+    color: #5dade2;
+}
+
+
+/* =========================
+   HISTORY
+========================= */
+
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.history-header h1 {
+    margin: 0;
+}
+
+.history-controls {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.control-button {
+    border: none;
+    background: #222;
+    color: white;
+    padding: 9px 11px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.control-button:active {
+    background: #444;
+}
+
+
+/* =========================
+   HISTORY LIST
+========================= */
+
+#history {
+    background: #181818;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.game {
+    display: grid;
+    grid-template-columns: 45px 1fr 70px 165px;
+    align-items: center;
+    gap: 5px;
+    padding: 12px 10px;
+    border-bottom: 1px solid #292929;
+    font-family: monospace;
+    font-size: 13px;
+}
+
+.game:last-child {
+    border-bottom: none;
+}
+
+.game-number {
+    color: #666;
+}
+
+.moves {
+    font-weight: bold;
+}
+
+.result {
+    text-align: center;
+    font-weight: bold;
+}
+
+.date {
+    text-align: right;
+    color: #777;
+    font-size: 11px;
+}
+
+.empty {
+    padding: 30px;
+    text-align: center;
+    color: #666;
+}
+
+
+/* =========================
+   BACKUP
+========================= */
+
+.backup {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #292929;
+}
+
+.backup h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.backup p {
+    color: #777;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.backup-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.backup-buttons button {
+    border: none;
+    background: #222;
+    color: white;
+    padding: 12px 15px;
+    border-radius: 9px;
+    cursor: pointer;
+}
+
+.backup-buttons button:active {
+    background: #444;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 500px) {
+
+    nav button {
+        font-size: 13px;
+    }
+
+    .rps-button {
+        height: 100px;
+        font-size: 40px;
+    }
+
+    .history-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .history-controls {
+        justify-content: flex-start;
+    }
+
+    .game {
+        grid-template-columns: 35px 1fr 60px;
+    }
+
+    .date {
+        grid-column: 2 / 4;
+        text-align: left;
+        margin-top: 3px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+
+<!-- =========================
+     NAVIGATION
+========================= -->
+
+<nav>
+
+    <button
+        id="navHome"
+        class="active"
+        onclick="showSection('home')">
+        Home
+    </button>
+
+    <button
+        id="navStats"
+        onclick="showSection('stats')">
+        Stats
+    </button>
+
+    <button
+        id="navHistory"
+        onclick="showSection('historySection')">
+        History
+    </button>
+
+</nav>
+
+
+<!-- =========================
+     HOME
+========================= -->
+
+<section id="home" class="section active">
+
+    <div class="recorder">
+
+        <div id="status">
+            YOUR MOVE
+        </div>
+
+        <div class="buttons">
+
+            <button
+                class="rps-button"
+                onclick="choose('P')">
+                P
+            </button>
+
+            <button
+                class="rps-button"
+                onclick="choose('R')">
+                R
+            </button>
+
+            <button
+                class="rps-button"
+                onclick="choose('S')">
+                S
+            </button>
+
+        </div>
+
+        <div id="lastGame"></div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     STATS
+========================= -->
+
+<section id="stats" class="section">
+
+    <div class="container">
+
+        <h1>Statistics</h1>
+
+        <div class="stats-grid">
+
+            <div class="stat">
+                <div
+                    id="totalGames"
+                    class="stat-number total">
+                    0
+                </div>
+
+                <div class="stat-label">
+                    TOTAL GAMES
+                </div>
+            </div>
+
+
+            <div class="stat">
+                <div
+                    id="wins"
+                    class="stat-number win">
+                    0
+                </div>
+
+                <div class="stat-label">
+                    WINS
+                </div>
+            </div>
+
+
+            <div class="stat">
+                <div
+                    id="losses"
+                    class="stat-number loss">
+                    0
+                </div>
+
+                <div class="stat-label">
+                    LOSSES
+                </div>
+            </div>
+
+
+            <div class="stat">
+                <div
+                    id="draws"
+                    class="stat-number draw">
+                    0
+                </div>
+
+                <div class="stat-label">
+                    DRAWS
+                </div>
+            </div>
+
+
+            <div class="stat">
+                <div
+                    id="winRate"
+                    class="stat-number winrate">
+                    0%
+                </div>
+
+                <div class="stat-label">
+                    WIN RATE
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     HISTORY
+========================= -->
+
+<section
+    id="historySection"
+    class="section">
+
+    <div class="container">
+
+        <div class="history-header">
+
+            <h1>History</h1>
+
+            <div class="history-controls">
+
+                <button
+                    class="control-button"
+                    onclick="undoLast()">
+                    Undo
+                </button>
+
+                <button
+                    class="control-button"
+                    onclick="exportCSV()">
+                    CSV
+                </button>
+
+                <button
+                    class="control-button"
+                    onclick="clearData()">
+                    Clear
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div id="history">
+
+            <div class="empty">
+                No games recorded yet.
+            </div>
+
+        </div>
+
+
+        <!-- Backup section -->
+
+        <div class="backup">
+
+            <h2>Backup & Restore</h2>
+
+            <p>
+                JSON backup contains your complete game data.
+                Use it if you change browser/device or need
+                to restore your records.
+            </p>
+
+            <div class="backup-buttons">
+
+                <button onclick="exportJSON()">
+                    Download Backup
+                </button>
+
+                <button onclick="document.getElementById('importFile').click()">
+                    Restore Backup
+                </button>
+
+                <input
+                    id="importFile"
+                    type="file"
+                    accept=".json"
+                    style="display:none"
+                    onchange="importJSON(event)">
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<script>
+
+/* =========================
+   DATA
+========================= */
+
+let games =
+    JSON.parse(
+        localStorage.getItem("rpsGames")
+    ) || [];
+
+let playerMove = null;
+
+
+/* =========================
+   NAVIGATION
+========================= */
+
+function showSection(sectionId) {
+
+    /*
+     Do not lose an unfinished move.
+     It stays stored in playerMove.
+    */
+
+    document
+        .querySelectorAll(".section")
+        .forEach(section => {
+            section.classList.remove("active");
+        });
+
+
+    document
+        .getElementById(sectionId)
+        .classList.add("active");
+
+
+    document
+        .querySelectorAll("nav button")
+        .forEach(button => {
+            button.classList.remove("active");
+        });
+
+
+    if (sectionId === "home") {
+
+        document
+            .getElementById("navHome")
+            .classList.add("active");
+
+    }
+
+    else if (sectionId === "stats") {
+
+        document
+            .getElementById("navStats")
+            .classList.add("active");
+
+    }
+
+    else if (sectionId === "historySection") {
+
+        document
+            .getElementById("navHistory")
+            .classList.add("active");
+
+    }
+
+}
+
+
+/* =========================
+   RESULT
+========================= */
+
+function getResult(player, bot) {
+
+    if (player === bot) {
+        return "DRAW";
+    }
+
+
+    if (
+        (player === "R" && bot === "S") ||
+        (player === "P" && bot === "R") ||
+        (player === "S" && bot === "P")
+    ) {
+        return "WIN";
+    }
+
+
+    return "LOSS";
+}
+
+
+/* =========================
+   SAVE
+========================= */
+
+function save() {
+
+    localStorage.setItem(
+        "rpsGames",
+        JSON.stringify(games)
+    );
+
+}
+
+
+/* =========================
+   RECORD
+========================= */
+
+function choose(move) {
+
+    /*
+     FIRST CLICK
+     = YOUR MOVE
+    */
+
+    if (playerMove === null) {
+
+        playerMove = move;
+
+        document.getElementById(
+            "status"
+        ).textContent =
+            "BOT MOVE";
+
+        return;
+    }
+
+
+    /*
+     SECOND CLICK
+     = BOT MOVE
+    */
+
+    const game = {
+
+        player: playerMove,
+
+        bot: move,
+
+        date:
+            new Date().toISOString()
+
+    };
+
+
+    games.push(game);
+
+
+    const result =
+        getResult(
+            game.player,
+            game.bot
+        );
+
+
+    playerMove = null;
+
+
+    save();
+
+    updateUI();
+
+    showLastGame(
+        game,
+        result
+    );
+
+}
+
+
+/* =========================
+   LAST GAME
+========================= */
+
+function showLastGame(game, result) {
+
+    const element =
+        document.getElementById(
+            "lastGame"
+        );
+
+
+    element.className =
+        `last-${result.toLowerCase()}`;
+
+
+    element.textContent =
+        `Last: ${game.player} ${game.bot} — ${result}`;
+
+}
+
+
+/* =========================
+   UPDATE UI
+========================= */
+
+function updateUI() {
+
+    updateStats();
+
+    updateHistory();
+
+
+    if (playerMove === null) {
+
+        document.getElementById(
+            "status"
+        ).textContent =
+            "YOUR MOVE";
+
+    }
+
+    else {
+
+        document.getElementById(
+            "status"
+        ).textContent =
+            "BOT MOVE";
+
+    }
+
+}
+
+
+/* =========================
+   STATS
+========================= */
+
+function updateStats() {
+
+    let wins = 0;
+    let losses = 0;
+    let draws = 0;
+
+
+    games.forEach(game => {
+
+        const result =
+            getResult(
+                game.player,
+                game.bot
+            );
+
+
+        if (result === "WIN") {
+            wins++;
+        }
+
+        else if (result === "LOSS") {
+            losses++;
+        }
+
+        else {
+            draws++;
+        }
+
+    });
+
+
+    document.getElementById(
+        "totalGames"
+    ).textContent =
+        games.length;
+
+
+    document.getElementById(
+        "wins"
+    ).textContent =
+        wins;
+
+
+    document.getElementById(
+        "losses"
+    ).textContent =
+        losses;
+
+
+    document.getElementById(
+        "draws"
+    ).textContent =
+        draws;
+
+
+    /*
+     Win rate excludes draws.
+    */
+
+    const decidedGames =
+        wins + losses;
+
+
+    const winRate =
+        decidedGames === 0
+            ? 0
+            : (wins / decidedGames) * 100;
+
+
+    document.getElementById(
+        "winRate"
+    ).textContent =
+        `${winRate.toFixed(1)}%`;
+
+}
+
+
+/* =========================
+   DATE
+========================= */
+
+function formatDate(dateString) {
+
+    if (!dateString) {
+        return "Unknown date";
+    }
+
+
+    const date =
+        new Date(dateString);
+
+
+    return date.toLocaleString([], {
+
+        year: "numeric",
+
+        month: "2-digit",
+
+        day: "2-digit",
+
+        hour: "2-digit",
+
+        minute: "2-digit",
+
+        second: "2-digit"
+
+    });
+
+}
+
+
+/* =========================
+   HISTORY
+========================= */
+
+function updateHistory() {
+
+    const history =
+        document.getElementById(
+            "history"
+        );
+
+
+    history.innerHTML = "";
+
+
+    if (games.length === 0) {
+
+        history.innerHTML =
+            `<div class="empty">
+                No games recorded yet.
+            </div>`;
+
+        return;
+    }
+
+
+    games.forEach((game, index) => {
+
+        const result =
+            getResult(
+                game.player,
+                game.bot
+            );
+
+
+        const gameElement =
+            document.createElement(
+                "div"
+            );
+
+
+        gameElement.className =
+            "game";
+
+
+        const number =
+            document.createElement(
+                "span"
+            );
+
+        number.className =
+            "game-number";
+
+        number.textContent =
+            `${index + 1}.`;
+
+
+        const moves =
+            document.createElement(
+                "span"
+            );
+
+        moves.className =
+            "moves";
+
+        moves.textContent =
+            `${game.player} ${game.bot}`;
+
+
+        const resultElement =
+            document.createElement(
+                "span"
+            );
+
+        resultElement.className =
+            `result ${result.toLowerCase()}`;
+
+        resultElement.textContent =
+            result;
+
+
+        const date =
+            document.createElement(
+                "span"
+            );
+
+        date.className =
+            "date";
+
+        date.textContent =
+            formatDate(game.date);
+
+
+        gameElement.appendChild(number);
+
+        gameElement.appendChild(moves);
+
+        gameElement.appendChild(
+            resultElement
+        );
+
+        gameElement.appendChild(date);
+
+
+        history.appendChild(
+            gameElement
+        );
+
+    });
+
+}
+
+
+/* =========================
+   UNDO
+========================= */
+
+function undoLast() {
+
+    /*
+     If waiting for bot,
+     cancel player's move.
+    */
+
+    if (playerMove !== null) {
+
+        playerMove = null;
+
+        document.getElementById(
+            "status"
+        ).textContent =
+            "YOUR MOVE";
+
+        return;
+    }
+
+
+    if (games.length === 0) {
+        return;
+    }
+
+
+    games.pop();
+
+    save();
+
+    updateUI();
+
+}
+
+
+/* =========================
+   CLEAR
+========================= */
+
+function clearData() {
+
+    if (
+        !confirm(
+            "Delete ALL recorded games?"
+        )
+    ) {
+        return;
+    }
+
+
+    games = [];
+
+    playerMove = null;
+
+    save();
+
+    updateUI();
+
+
+    document.getElementById(
+        "lastGame"
+    ).textContent = "";
+
+}
+
+
+/* =========================
+   CSV EXPORT
+========================= */
+
+function exportCSV() {
+
+    if (games.length === 0) {
+
+        alert(
+            "No games recorded."
+        );
+
+        return;
+    }
+
+
+    const header =
+        "Game,Player,Bot,Result,Date";
+
+
+    const rows =
+        games.map(
+            (game, index) => {
+
+                const result =
+                    getResult(
+                        game.player,
+                        game.bot
+                    );
+
+
+                return [
+                    index + 1,
+                    game.player,
+                    game.bot,
+                    result,
+                    game.date || ""
+                ].join(",");
+
+            }
+        );
+
+
+    const csv =
+        header +
+        "\n" +
+        rows.join("\n");
+
+
+    downloadFile(
+        csv,
+        "rps_games.csv",
+        "text/csv"
+    );
+
+}
+
+
+/* =========================
+   JSON BACKUP
+========================= */
+
+function exportJSON() {
+
+    if (games.length === 0) {
+
+        alert(
+            "No games recorded."
+        );
+
+        return;
+    }
+
+
+    const backup = {
+
+        version: 1,
+
+        exportedAt:
+            new Date().toISOString(),
+
+        games: games
+
+    };
+
+
+    const json =
+        JSON.stringify(
+            backup,
+            null,
+            2
+        );
+
+
+    downloadFile(
+        json,
+        "rps_backup.json",
+        "application/json"
+    );
+
+}
+
+
+/* =========================
+   IMPORT JSON
+========================= */
+
+function importJSON(event) {
+
+    const file =
+        event.target.files[0];
+
+
+    if (!file) {
+        return;
+    }
+
+
+    const reader =
+        new FileReader();
+
+
+    reader.onload =
+        function(e) {
+
+            try {
+
+                const data =
+                    JSON.parse(
+                        e.target.result
+                    );
+
+
+                let importedGames;
+
+
+                /*
+                 Support both:
+                 { games: [...] }
+                 and
+                 [...] 
+                */
+
+                if (
+                    Array.isArray(data)
+                ) {
+
+                    importedGames =
+                        data;
+
+                }
+
+                else if (
+                    Array.isArray(
+                        data.games
+                    )
+                ) {
+
+                    importedGames =
+                        data.games;
+
+                }
+
+                else {
+
+                    throw new Error(
+                        "Invalid backup"
+                    );
+
+                }
+
+
+                /*
+                 Validate every game.
+                */
+
+                const valid =
+                    importedGames.every(
+                        game =>
+                            game &&
+                            ["P", "R", "S"]
+                                .includes(
+                                    game.player
+                                ) &&
+                            ["P", "R", "S"]
+                                .includes(
+                                    game.bot
+                                )
+                    );
+
+
+                if (!valid) {
+
+                    throw new Error(
+                        "Invalid game data"
+                    );
+
+                }
+
+
+                if (
+                    !confirm(
+                        `Replace current data with ${importedGames.length} imported games?`
+                    )
+                ) {
+
+                    event.target.value = "";
+
+                    return;
+                }
+
+
+                games =
+                    importedGames;
+
+
+                playerMove = null;
+
+                save();
+
+                updateUI();
+
+
+                alert(
+                    `Successfully restored ${games.length} games.`
+                );
+
+            }
+
+            catch(error) {
+
+                alert(
+                    "Invalid backup file."
+                );
+
+            }
+
+
+            event.target.value = "";
+
+        };
+
+
+    reader.readAsText(file);
+
+}
+
+
+/* =========================
+   DOWNLOAD HELPER
+========================= */
+
+function downloadFile(
+    content,
+    filename,
+    type
+) {
+
+    const blob =
+        new Blob(
+            [content],
+            { type: type }
+        );
+
+
+    const url =
+        URL.createObjectURL(blob);
+
+
+    const a =
+        document.createElement(
+            "a"
+        );
+
+
+    a.href = url;
+
+    a.download = filename;
+
+    document.body.appendChild(a);
+
+    a.click();
+
+    a.remove();
+
+
+    URL.revokeObjectURL(url);
+
+}
+
+
+/* =========================
+   KEYBOARD
+========================= */
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        const key =
+            event.key.toUpperCase();
+
+
+        if (
+            key === "P" ||
+            key === "R" ||
+            key === "S"
+        ) {
+
+            choose(key);
+
+        }
+
+
+        if (
+            event.key === "Backspace"
+        ) {
+
+            undoLast();
+
+        }
+
+    }
+);
+
+
+/* =========================
+   START
+========================= */
+
+updateUI();
+
+</script>
+
+</body>
+</html>
