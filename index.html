@@ -1,3388 +1,1126 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RPS Recorder</title>
-
-<style>
-* {
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
-}
-
-body {
-    margin: 0;
-    min-height: 100vh;
-    background: #111;
-    color: white;
-    font-family: Arial, sans-serif;
-    user-select: none;
-}
-
-button {
-    font-family: inherit;
-}
-
-nav {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 60px;
-    background: #181818;
-    border-bottom: 1px solid #292929;
-    display: flex;
-    justify-content: center;
-    z-index: 1000;
-}
-
-nav button {
-    flex: 1;
-    max-width: 180px;
-    border: none;
-    background: transparent;
-    color: #777;
-    font-size: 14px;
-    cursor: pointer;
-}
-
-nav button.active {
-    background: #222;
-    color: white;
-}
-
-.section {
-    display: none;
-    min-height: 100vh;
-    padding: 80px 20px 30px;
-}
-
-.section.active {
-    display: block;
-}
-
-.container {
-    width: 100%;
-    max-width: 700px;
-    margin: auto;
-}
-
-
-/* =========================================================
-   MAIN HOME
-========================================================= */
-
-#mainHome {
-    align-items: center;
-    justify-content: center;
-}
-
-#mainHome.active {
-    display: flex;
-}
-
-.launcher {
-    width: 100%;
-    max-width: 650px;
-    text-align: center;
-}
-
-.launcher-title {
-    font-size: 30px;
-    font-weight: bold;
-    margin-bottom: 8px;
-}
-
-.launcher-subtitle {
-    color: #777;
-    font-size: 14px;
-    line-height: 1.5;
-    margin-bottom: 35px;
-}
-
-.mode-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
-}
-
-.mode-card {
-    background: #1c1c1c;
-    border: 1px solid #292929;
-    border-radius: 18px;
-    padding: 28px 18px;
-    cursor: pointer;
-    transition: 0.15s;
-}
-
-.mode-card:active {
-    transform: scale(0.97);
-    background: #242424;
-}
-
-.mode-icon {
-    font-size: 42px;
-    margin-bottom: 15px;
-}
-
-.mode-title {
-    font-size: 19px;
-    font-weight: bold;
-}
-
-.mode-description {
-    color: #777;
-    font-size: 12px;
-    line-height: 1.5;
-    margin-top: 8px;
-}
-
-.mode-count {
-    margin-top: 18px;
-    color: #aaa;
-    font-size: 13px;
-}
-
-.mode-count strong {
-    color: white;
-}
-
-
-/* =========================================================
-   NORMAL RECORDER
-========================================================= */
-
-#normalHome {
-    align-items: center;
-    justify-content: center;
-}
-
-#normalHome.active {
-    display: flex;
-}
-
-.recorder {
-    width: 100%;
-    max-width: 650px;
-    text-align: center;
-}
-
-#normalStatus {
-    font-size: 20px;
-    color: #aaa;
-    margin-bottom: 30px;
-}
-
-.buttons {
-    display: flex;
-    gap: 12px;
-}
-
-.rps-button {
-    flex: 1;
-    height: 120px;
-    font-size: 48px;
-    font-weight: bold;
-    border: none;
-    border-radius: 18px;
-    background: #222;
-    color: white;
-    cursor: pointer;
-}
-
-.rps-button:active {
-    transform: scale(0.94);
-    background: #444;
-}
-
-#normalLastGame {
-    margin-top: 25px;
-    color: #777;
-    font-size: 14px;
-    min-height: 20px;
-}
-
-.last-win {
-    color: #4caf50 !important;
-}
-
-.last-loss {
-    color: #f44336 !important;
-}
-
-.last-draw {
-    color: #ffc107 !important;
-}
-
-
-/* =========================================================
-   TITLES / STATS
-========================================================= */
-
-h1 {
-    margin-top: 0;
-    margin-bottom: 25px;
-}
-
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-}
-
-.stat {
-    background: #1c1c1c;
-    border-radius: 15px;
-    padding: 22px 10px;
-    text-align: center;
-}
-
-.stat-number {
-    font-size: 30px;
-    font-weight: bold;
-}
-
-.stat-label {
-    margin-top: 8px;
-    color: #888;
-    font-size: 12px;
-}
-
-.win {
-    color: #4caf50;
-}
-
-.loss {
-    color: #f44336;
-}
-
-.draw {
-    color: #ffc107;
-}
-
-.total {
-    color: white;
-}
-
-.rate {
-    color: #5dade2;
-}
-
-
-/* =========================================================
-   GENERAL CONTROLS
-========================================================= */
-
-.controls {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    margin-top: 25px;
-    flex-wrap: wrap;
-}
-
-.control-button {
-    border: none;
-    background: #222;
-    color: white;
-    padding: 10px 14px;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-.control-button:active {
-    background: #444;
-}
-
-.danger {
-    color: #f44336;
-}
-
-
-/* =========================================================
-   HISTORY
-========================================================= */
-
-.history-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 15px;
-}
-
-.history-header h1 {
-    margin: 0;
-}
-
-.history-controls {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-}
-
-#normalHistory,
-#experimentHistory {
-    background: #181818;
-    border-radius: 12px;
-    overflow: hidden;
-}
-
-.game {
-    display: grid;
-    grid-template-columns: 45px 1fr 70px 165px;
-    align-items: center;
-    gap: 5px;
-    padding: 12px 10px;
-    border-bottom: 1px solid #292929;
-    font-family: monospace;
-    font-size: 13px;
-}
-
-.game:last-child {
-    border-bottom: none;
-}
-
-.game-number {
-    color: #666;
-}
-
-.moves {
-    font-weight: bold;
-}
-
-.result {
-    text-align: center;
-    font-weight: bold;
-}
-
-.date {
-    text-align: right;
-    color: #777;
-    font-size: 11px;
-}
-
-.empty {
-    padding: 30px;
-    text-align: center;
-    color: #666;
-}
-
-
-/* =========================================================
-   BACKUP
-========================================================= */
-
-.backup {
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: 1px solid #292929;
-}
-
-.backup h2 {
-    font-size: 18px;
-    margin-bottom: 10px;
-}
-
-.backup p {
-    color: #777;
-    font-size: 13px;
-    line-height: 1.5;
-}
-
-.backup-buttons {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.backup-buttons button {
-    border: none;
-    background: #222;
-    color: white;
-    padding: 12px 15px;
-    border-radius: 9px;
-    cursor: pointer;
-}
-
-.backup-buttons button:active {
-    background: #444;
-}
-
-
-/* =========================================================
-   EXPERIMENT
-========================================================= */
-
-#experimentHome {
-    align-items: center;
-    justify-content: center;
-}
-
-#experimentHome.active {
-    display: flex;
-}
-
-.experiment-box {
-    width: 100%;
-    max-width: 650px;
-    text-align: center;
-}
-
-.title {
-    font-size: 25px;
-    font-weight: bold;
-    margin-bottom: 8px;
-}
-
-.subtitle {
-    color: #777;
-    font-size: 13px;
-    line-height: 1.5;
-    margin-bottom: 25px;
-}
-
-.progress {
-    color: #888;
-    font-size: 14px;
-    margin-bottom: 15px;
-}
-
-.required-label {
-    color: #777;
-    font-size: 13px;
-    margin-bottom: 8px;
-}
-
-.required-move {
-    font-size: 70px;
-    font-weight: bold;
-    height: 100px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.instruction {
-    color: #aaa;
-    font-size: 15px;
-    margin: 10px 0 25px;
-}
-
-.bot-label {
-    color: #777;
-    font-size: 13px;
-    margin-bottom: 10px;
-}
-
-.bot-buttons {
-    display: flex;
-    gap: 12px;
-}
-
-.bot-button {
-    flex: 1;
-    height: 105px;
-    font-size: 40px;
-    font-weight: bold;
-    border: none;
-    border-radius: 16px;
-    background: #222;
-    color: white;
-    cursor: pointer;
-}
-
-.bot-button:active {
-    transform: scale(0.94);
-    background: #444;
-}
-
-.bot-button:disabled {
-    opacity: 0.35;
-}
-
-.last-result {
-    min-height: 24px;
-    margin-top: 20px;
-    font-size: 14px;
-}
-
-
-/* =========================================================
-   CARDS / MATRIX
-========================================================= */
-
-.card {
-    margin-top: 20px;
-    background: #181818;
-    border-radius: 14px;
-    overflow: hidden;
-}
-
-.card-title {
-    padding: 16px;
-    font-weight: bold;
-    border-bottom: 1px solid #292929;
-}
-
-.matrix {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13px;
-}
-
-.matrix th,
-.matrix td {
-    padding: 13px 8px;
-    text-align: center;
-    border-bottom: 1px solid #292929;
-}
-
-.matrix th {
-    color: #888;
-    font-weight: normal;
-}
-
-.matrix td {
-    font-family: monospace;
-}
-
-.counter {
-    color: #f44336;
-    font-weight: bold;
-}
-
-.same {
-    color: #ffc107;
-}
-
-.non-counter {
-    color: #4caf50;
-}
-
-.status-card {
-    background: #181818;
-    border-radius: 14px;
-    padding: 18px;
-    margin-top: 20px;
-}
-
-.status-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 0;
-    color: #aaa;
-    font-size: 14px;
-}
-
-.status-row strong {
-    color: white;
-}
-
-.info {
-    margin-top: 25px;
-    padding: 17px;
-    background: #181818;
-    border-radius: 14px;
-    color: #888;
-    font-size: 13px;
-    line-height: 1.6;
-}
-
-.info strong {
-    color: white;
-}
-
-
-/* =========================================================
-   MOBILE
-========================================================= */
-
-@media (max-width: 600px) {
-
-    .mode-grid {
-        grid-template-columns: 1fr;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RPS AI LAB</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --panel: #161b22;
+      --panel2: #1c2333;
+      --border: #30363d;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --accent: #58a6ff;
+      --green: #3fb950;
+      --red: #f85149;
+      --yellow: #d29922;
+      --purple: #bc8cff;
+      --orange: #db6d28;
     }
-
-    .launcher-title {
-        font-size: 26px;
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      line-height: 1.5;
+      padding: 1rem;
+      max-width: 1000px;
+      margin: 0 auto;
     }
-}
-
-@media (max-width: 500px) {
-
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    h1 {
+      font-size: 1.8rem;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+    }
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
     nav button {
-        font-size: 12px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: 0.15s;
     }
-
-    .rps-button {
-        height: 100px;
-        font-size: 40px;
+    nav button:hover { border-color: var(--accent); }
+    nav button.active {
+      background: var(--accent);
+      color: #0d1117;
+      border-color: var(--accent);
+      font-weight: 600;
     }
-
-    .required-move {
-        font-size: 65px;
+    main {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      min-height: 60vh;
     }
-
-    .bot-button {
-        height: 95px;
-        font-size: 36px;
+    .card {
+      background: var(--panel2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 1rem;
     }
-
-    .history-header {
-        align-items: flex-start;
-        flex-direction: column;
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
     }
-
-    .history-controls {
-        justify-content: flex-start;
+    .stat {
+      background: var(--panel2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.8rem;
+      text-align: center;
     }
-
-    .game {
-        grid-template-columns: 35px 1fr 60px;
+    .stat .value { font-size: 1.6rem; font-weight: 700; }
+    .muted { color: var(--muted); font-size: 0.85rem; }
+    .row { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin: 0.5rem 0; }
+    .btn {
+      background: var(--panel2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: 0.15s;
     }
-
-    .date {
-        grid-column: 2 / 4;
-        text-align: left;
-        margin-top: 3px;
+    .btn:hover { border-color: var(--accent); }
+    .btn.primary { background: var(--accent); color: #0d1117; border-color: var(--accent); font-weight: 600; }
+    .btn.success { background: var(--green); color: #0d1117; border-color: var(--green); }
+    .btn.danger { background: var(--red); color: white; border-color: var(--red); }
+    .btn.warning { background: var(--yellow); color: #0d1117; border-color: var(--yellow); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .move-btns { display: flex; gap: 0.5rem; margin: 0.8rem 0; }
+    .move-btn {
+      font-size: 1.2rem;
+      padding: 0.6rem 1.2rem;
+      min-width: 80px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--panel2);
+      color: var(--text);
+      cursor: pointer;
+      transition: 0.15s;
     }
-}
-</style>
+    .move-btn:hover { background: var(--accent); color: #0d1117; border-color: var(--accent); }
+    .prediction-panel {
+      background: linear-gradient(145deg, #1a2333, #101826);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+    .prob-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 0.4rem 0;
+      font-size: 0.9rem;
+    }
+    .bar {
+      flex: 1;
+      height: 12px;
+      background: #0d1117;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .bar-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 6px;
+      transition: width 0.3s;
+    }
+    .bar-fill.green { background: var(--green); }
+    .bar-fill.yellow { background: var(--yellow); }
+    .bar-fill.red { background: var(--red); }
+    .confidence {
+      font-weight: 600;
+      padding: 0.2rem 0.6rem;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      background: #30363d;
+    }
+    .confidence.VeryLow { background: #6e7681; color: white; }
+    .confidence.Low { background: #f85149; color: white; }
+    .confidence.Medium { background: #d29922; color: #0d1117; }
+    .confidence.High { background: #3fb950; color: #0d1117; }
+    .confidence.VeryHigh { background: #bc8cff; color: #0d1117; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    th, td { padding: 0.5rem; border-bottom: 1px solid var(--border); text-align: left; }
+    th { color: var(--muted); font-weight: 600; }
+    tr:hover { background: #161b22; }
+    .scroll-table { max-height: 500px; overflow-y: auto; }
+    .analysis-section { margin-bottom: 1.5rem; }
+    .analysis-section h3 {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.3rem;
+      margin-bottom: 0.8rem;
+      color: var(--accent);
+    }
+    .hidden { display: none; }
+    .small { font-size: 0.85rem; }
+    .tag {
+      display: inline-block;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      background: #30363d;
+      color: var(--text);
+    }
+    select, input[type="file"] {
+      background: var(--panel2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.4rem;
+      border-radius: 6px;
+    }
+  </style>
 </head>
-
 <body>
-
-
-<!-- =========================================================
-     MAIN NAVIGATION
-========================================================= -->
-
-<nav>
-
-    <button
-        id="navHome"
-        class="active"
-        onclick="showMainSection('mainHome')">
-        Home
-    </button>
-
-    <button
-        id="navNormal"
-        onclick="showMainSection('normalHome')">
-        Recorder
-    </button>
-
-    <button
-        id="navExperiment"
-        onclick="showMainSection('experimentHome')">
-        Experiment
-    </button>
-
-</nav>
-
-
-<!-- =========================================================
-     MAIN HOME
-========================================================= -->
-
-<section
-    id="mainHome"
-    class="section active">
-
-    <div class="launcher">
-
-        <div class="launcher-title">
-            RPS Recorder
-        </div>
-
-        <div class="launcher-subtitle">
-            Choose a recording mode.
-            Your normal games and experimental data
-            are stored separately.
-        </div>
-
-        <div class="mode-grid">
-
-            <div
-                class="mode-card"
-                onclick="showMainSection('normalHome')">
-
-                <div class="mode-icon">
-                    🎮
-                </div>
-
-                <div class="mode-title">
-                    Normal Recorder
-                </div>
-
-                <div class="mode-description">
-                    Manually record your move and
-                    the bot's response during normal play.
-                </div>
-
-                <div class="mode-count">
-                    <strong id="normalCount">
-                        0
-                    </strong>
-                    games recorded
-                </div>
-
-            </div>
-
-
-            <div
-                class="mode-card"
-                onclick="showMainSection('experimentHome')">
-
-                <div class="mode-icon">
-                    🧪
-                </div>
-
-                <div class="mode-title">
-                    Anti-Cheating Experiment
-                </div>
-
-                <div class="mode-description">
-                    Your move is independently randomized
-                    before every round.
-                </div>
-
-                <div class="mode-count">
-                    <strong id="experimentCount">
-                        0
-                    </strong>
-                    / 300 rounds
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- =========================================================
-     NORMAL RECORDER HOME
-========================================================= -->
-
-<section
-    id="normalHome"
-    class="section">
-
-    <div class="recorder">
-
-        <div id="normalStatus">
-            YOUR MOVE
-        </div>
-
-        <div class="buttons">
-
-            <button
-                class="rps-button"
-                onclick="normalChoose('P')">
-                P
-            </button>
-
-            <button
-                class="rps-button"
-                onclick="normalChoose('R')">
-                R
-            </button>
-
-            <button
-                class="rps-button"
-                onclick="normalChoose('S')">
-                S
-            </button>
-
-        </div>
-
-        <div id="normalLastGame"></div>
-
-    </div>
-
-</section>
-
-
-<!-- =========================================================
-     NORMAL STATS
-========================================================= -->
-
-<section
-    id="normalStats"
-    class="section">
-
-    <div class="container">
-
-        <h1>Recorder Statistics</h1>
-
-        <div class="stats-grid">
-
-            <div class="stat">
-                <div
-                    id="normalTotalGames"
-                    class="stat-number total">
-                    0
-                </div>
-
-                <div class="stat-label">
-                    TOTAL GAMES
-                </div>
-            </div>
-
-            <div class="stat">
-                <div
-                    id="normalWins"
-                    class="stat-number win">
-                    0
-                </div>
-
-                <div class="stat-label">
-                    WINS
-                </div>
-            </div>
-
-            <div class="stat">
-                <div
-                    id="normalLosses"
-                    class="stat-number loss">
-                    0
-                </div>
-
-                <div class="stat-label">
-                    LOSSES
-                </div>
-            </div>
-
-            <div class="stat">
-                <div
-                    id="normalDraws"
-                    class="stat-number draw">
-                    0
-                </div>
-
-                <div class="stat-label">
-                    DRAWS
-                </div>
-            </div>
-
-            <div class="stat">
-                <div
-                    id="normalWinRate"
-                    class="stat-number rate">
-                    0%
-                </div>
-
-                <div class="stat-label">
-                    WIN RATE
-                </div>
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- =========================================================
-     NORMAL HISTORY
-========================================================= -->
-
-<section
-    id="normalHistorySection"
-    class="section">
-
-    <div class="container">
-
-        <div class="history-header">
-
-            <h1>History</h1>
-
-            <div class="history-controls">
-
-                <button
-                    class="control-button"
-                    onclick="normalUndo()">
-                    Undo
-                </button>
-
-                <button
-                    class="control-button"
-                    onclick="normalExportCSV()">
-                    CSV
-                </button>
-
-            </div>
-
-        </div>
-
-        <div id="normalHistory">
-
-            <div class="empty">
-                No games recorded yet.
-            </div>
-
-        </div>
-
-
-        <div class="backup">
-
-            <h2>Backup & Restore</h2>
-
-            <p>
-                Save your normal recorder data as JSON
-                or restore a previous backup.
-            </p>
-
-            <div class="backup-buttons">
-
-                <button onclick="normalExportJSON()">
-                    Download Backup
-                </button>
-
-                <button
-                    onclick="document.getElementById('normalImportFile').click()">
-                    Restore Backup
-                </button>
-
-                <input
-                    id="normalImportFile"
-                    type="file"
-                    accept=".json"
-                    style="display:none"
-                    onchange="normalImportJSON(event)">
-
-            </div>
-
-        </div>
-
-
-        <div class="controls">
-
-            <button
-                class="control-button danger"
-                onclick="normalClear()">
-                Clear Normal Data
-            </button>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- =========================================================
-     EXPERIMENT HOME
-========================================================= -->
-
-<section
-    id="experimentHome"
-    class="section">
-
-    <div class="experiment-box">
-
-        <div class="title">
-            Anti-Cheating Experiment
-        </div>
-
-        <div class="subtitle">
-            Your move is generated randomly.
-            Play exactly the displayed move against
-            the real bot, then record its response.
-        </div>
-
-        <div class="progress">
-            Round <strong id="experimentRoundNumber">1</strong>
-            /
-            <strong id="experimentTargetNumber">300</strong>
-        </div>
-
-        <div class="required-label">
-            PLAY THIS MOVE
-        </div>
-
-        <div
-            id="requiredMove"
-            class="required-move">
-            R
-        </div>
-
-        <div class="instruction">
-            Play the move above against the bot.
-            Then select what the bot actually played.
-        </div>
-
-        <div class="bot-label">
-            WHAT DID THE BOT PLAY?
-        </div>
-
-        <div class="bot-buttons">
-
-            <button
-                id="botR"
-                class="bot-button"
-                onclick="recordBot('R')">
-                R
-            </button>
-
-            <button
-                id="botP"
-                class="bot-button"
-                onclick="recordBot('P')">
-                P
-            </button>
-
-            <button
-                id="botS"
-                class="bot-button"
-                onclick="recordBot('S')">
-                S
-            </button>
-
-        </div>
-
-        <div
-            id="lastResult"
-            class="last-result">
-        </div>
-
-        <div class="controls">
-
-            <button
-                class="control-button"
-                onclick="togglePause()"
-                id="pauseButton">
-                Pause
-            </button>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- =========================================================
-     EXPERIMENT ANALYSIS
-========================================================= -->
-
-<section
-    id="experimentStats"
-    class="section">
-
-    <div class="container">
-
-        <h1>Experiment Analysis</h1>
-
-        <div class="stats-grid">
-
-            <div class="stat">
-                <div
-                    id="experimentTotalGames"
-                    class="stat-number total">
-                    0
-                </div>
-
-                <div class="stat-label">
-                    ROUNDS
-                </div>
-            </div>
-
-            <div class="stat">
-                <div
-                    id="experimentBotWins"
-                    class="stat-number loss">
-                    0
-                </div>
-
-                <div class="stat-label">
-                    BOT WINS
-                </div>
-            </div>
-
-            <div class="stat">
-                <div
-                    id="experimentPlayerWins"
-                    class="stat-number win">
-                    0
-                </div>
-
-                <div class="stat-label">
-                    YOUR WINS
-                </div>
-            </div>
-
-            <div class="stat">
-                <div
-                    id="experimentDraws"
-                    class="stat-number draw">
-                    0
-                </div>
-
-                <div class="stat-label">
-                    DRAWS
-                </div>
-            </div>
-
-            <div class="stat">
-                <div
-                    id="experimentBotWinRate"
-                    class="stat-number rate">
-                    0%
-                </div>
-
-                <div class="stat-label">
-                    BOT WIN RATE
-                </div>
-            </div>
-
-            <div class="stat">
-                <div
-                    id="experimentCounterRate"
-                    class="stat-number rate">
-                    0%
-                </div>
-
-                <div class="stat-label">
-                    COUNTER RATE
-                </div>
-            </div>
-
-        </div>
-
-
-        <div class="card">
-
-            <div class="card-title">
-                Bot Response Matrix
-            </div>
-
-            <table class="matrix">
-
-                <thead>
-
-                    <tr>
-                        <th>Your Move</th>
-                        <th>Bot R</th>
-                        <th>Bot P</th>
-                        <th>Bot S</th>
-                        <th>Total</th>
-                        <th>Counter %</th>
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    <tr>
-                        <td><strong>R</strong></td>
-                        <td id="RR">0</td>
-                        <td id="RP" class="counter">0</td>
-                        <td id="RS" class="non-counter">0</td>
-                        <td id="RTotal">0</td>
-                        <td id="RCounter">0%</td>
-                    </tr>
-
-                    <tr>
-                        <td><strong>P</strong></td>
-                        <td id="PR" class="non-counter">0</td>
-                        <td id="PP">0</td>
-                        <td id="PS" class="counter">0</td>
-                        <td id="PTotal">0</td>
-                        <td id="PCounter">0%</td>
-                    </tr>
-
-                    <tr>
-                        <td><strong>S</strong></td>
-                        <td id="SR" class="counter">0</td>
-                        <td id="SP" class="non-counter">0</td>
-                        <td id="SS">0</td>
-                        <td id="STotal">0</td>
-                        <td id="SCounter">0%</td>
-                    </tr>
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-
-        <div class="card">
-
-            <div class="card-title">
-                Your Random Move Distribution
-            </div>
-
-            <div class="status-card">
-
-                <div class="status-row">
-                    <span>Rock</span>
-                    <strong id="freqR">0%</strong>
-                </div>
-
-                <div class="status-row">
-                    <span>Paper</span>
-                    <strong id="freqP">0%</strong>
-                </div>
-
-                <div class="status-row">
-                    <span>Scissors</span>
-                    <strong id="freqS">0%</strong>
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="info">
-
-            <strong>What we are testing:</strong><br>
-
-            Your move is generated independently using
-            the browser's cryptographic random generator.
-
-            <br><br>
-
-            If the bot cannot see your current move and
-            behaves independently, each response should be
-            approximately 33.3% R, 33.3% P and 33.3% S
-            for each of your moves.
-
-            <br><br>
-
-            The three counter relationships are:
-
-            <strong>R → P</strong>,
-            <strong>P → S</strong>,
-            <strong>S → R</strong>.
-
-            <br><br>
-
-            A random bot should have an overall counter
-            rate close to <strong>33.3%</strong>.
-
-        </div>
-
-
-        <div class="controls">
-
-            <button
-                class="control-button"
-                onclick="experimentExportCSV()">
-                Export CSV
-            </button>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- =========================================================
-     EXPERIMENT HISTORY
-========================================================= -->
-
-<section
-    id="experimentHistorySection"
-    class="section">
-
-    <div class="container">
-
-        <div class="history-header">
-
-            <h1>Experiment History</h1>
-
-            <div class="history-controls">
-
-                <button
-                    class="control-button"
-                    onclick="experimentUndo()">
-                    Undo
-                </button>
-
-                <button
-                    class="control-button"
-                    onclick="experimentExportCSV()">
-                    CSV
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <div id="experimentHistory">
-
-            <div class="empty">
-                No experiment rounds recorded yet.
-            </div>
-
-        </div>
-
-
-        <div class="backup">
-
-            <h2>Experiment Backup & Restore</h2>
-
-            <p>
-                Save or restore the experimental dataset.
-                This data is completely separate from
-                the normal recorder.
-            </p>
-
-            <div class="backup-buttons">
-
-                <button onclick="experimentExportJSON()">
-                    Download Backup
-                </button>
-
-                <button
-                    onclick="document.getElementById('experimentImportFile').click()">
-                    Restore Backup
-                </button>
-
-                <input
-                    id="experimentImportFile"
-                    type="file"
-                    accept=".json"
-                    style="display:none"
-                    onchange="experimentImportJSON(event)">
-
-            </div>
-
-        </div>
-
-
-        <div class="controls">
-
-            <button
-                class="control-button danger"
-                onclick="clearExperiment()">
-                Clear Experiment
-            </button>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<script>
-
-/* =========================================================
-   DATA
-========================================================= */
-
-/*
-    IMPORTANT:
-
-    Normal recorder:
-        rpsGames
-
-    Experiment:
-        rpsExperiment
-
-    They are completely separate.
-*/
-
-let normalGames =
-    JSON.parse(
-        localStorage.getItem("rpsGames")
-    ) || [];
-
-let experimentGames =
-    JSON.parse(
-        localStorage.getItem("rpsExperiment")
-    ) || [];
-
-
-let normalPlayerMove = null;
-
-let currentMove = null;
-
-let paused = false;
-
-const TARGET_ROUNDS = 300;
-
-
-/* =========================================================
-   MAIN NAVIGATION
-========================================================= */
-
-function showMainSection(sectionId) {
-
-    document
-        .querySelectorAll(".section")
-        .forEach(section => {
-            section.classList.remove("active");
-        });
-
-
-    document
-        .getElementById(sectionId)
-        .classList.add("active");
-
-
-    /*
-        Main home navigation.
-    */
-
-    document
-        .querySelectorAll("nav button")
-        .forEach(button => {
-            button.classList.remove("active");
-        });
-
-
-    if (sectionId === "mainHome") {
-
-        document
-            .getElementById("navHome")
-            .classList.add("active");
-
-    }
-
-    else if (
-        sectionId === "normalHome" ||
-        sectionId === "normalStats" ||
-        sectionId === "normalHistorySection"
-    ) {
-
-        document
-            .getElementById("navNormal")
-            .classList.add("active");
-
-    }
-
-    else if (
-        sectionId === "experimentHome" ||
-        sectionId === "experimentStats" ||
-        sectionId === "experimentHistorySection"
-    ) {
-
-        document
-            .getElementById("navExperiment")
-            .classList.add("active");
-
-    }
-
-
-    /*
-        Update whichever mode was opened.
-    */
-
-    updateAllUI();
-
-}
-
-
-/* =========================================================
-   MODE NAVIGATION
-========================================================= */
-
-function showNormalPage(page) {
-
-    showMainSection(page);
-
-}
-
-
-function showExperimentPage(page) {
-
-    showMainSection(page);
-
-}
-
-
-/* =========================================================
-   NORMAL RESULT
-========================================================= */
-
-function getResult(player, bot) {
-
-    if (player === bot) {
-        return "DRAW";
-    }
-
-
-    if (
-        (player === "R" && bot === "S") ||
-        (player === "P" && bot === "R") ||
-        (player === "S" && bot === "P")
-    ) {
-
-        return "WIN";
-
-    }
-
-
-    return "LOSS";
-
-}
-
-
-/* =========================================================
-   NORMAL SAVE
-========================================================= */
-
-function saveNormal() {
-
-    localStorage.setItem(
-        "rpsGames",
-        JSON.stringify(normalGames)
-    );
-
-}
-
-
-/* =========================================================
-   NORMAL RECORDER
-========================================================= */
-
-function normalChoose(move) {
-
-    /*
-        FIRST CLICK = PLAYER MOVE
-    */
-
-    if (normalPlayerMove === null) {
-
-        normalPlayerMove = move;
-
-        document.getElementById(
-            "normalStatus"
-        ).textContent =
-            "BOT MOVE";
-
-        return;
-
-    }
-
-
-    /*
-        SECOND CLICK = BOT MOVE
-    */
-
-    const game = {
-
-        player:
-            normalPlayerMove,
-
-        bot:
-            move,
-
-        date:
-            new Date().toISOString()
-
+  <header>
+    <h1>🪨📄✂️ RPS AI LAB</h1>
+    <nav id="nav">
+      <button data-tab="home" class="active">🏠 Home</button>
+      <button data-tab="data">📊 Data Collection</button>
+      <button data-tab="ai">🧠 AI Prediction</button>
+      <button data-tab="analysis">🔬 Analysis Lab</button>
+      <button data-tab="history">📜 History</button>
+    </nav>
+  </header>
+  <main id="mainContent"></main>
+  <input type="file" id="importFile" accept=".json" style="display:none">
+
+  <script>
+    // ==================== STATE ====================
+    const STORAGE_KEY = 'rpsAILabData';
+    let state = {
+      rounds: [],
+      settings: {
+        botMode: 'auto',       // 'auto' | 'manual'
+        botStrategy: 'random', // 'random' | 'rock_biased' | 'paper_biased' | 'scissors_biased' | 'adaptive' | 'mirror' | 'cycle'
+        blindMode: false,
+        sessionId: 1
+      }
+    };
+    let ui = {
+      currentTab: 'home',
+      dcStep: 'player',
+      dcPlayerMove: null,
+      dcBotMove: null,
+      dcRound: null,
+      aiStep: 'player',
+      aiPlayerMove: null,
+      aiBotMove: null,
+      aiRound: null,
+      aiPrediction: null
     };
 
+    // ==================== PERSISTENCE ====================
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+    function loadState() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      try {
+        const parsed = JSON.parse(raw);
+        if (parsed.rounds) state.rounds = parsed.rounds;
+        if (parsed.settings) state.settings = { ...state.settings, ...parsed.settings };
+      } catch (e) { console.warn('Failed to load state', e); }
+    }
 
-    normalGames.push(game);
+    // ==================== UTILITIES ====================
+    function moveName(m) { return m === 'R' ? 'Rock' : m === 'P' ? 'Paper' : 'Scissors'; }
+    function resultName(r) { return r === 'W' ? 'WIN' : r === 'L' ? 'LOSS' : 'DRAW'; }
+    function getResult(player, bot) {
+      if (player === bot) return 'D';
+      if ((player === 'R' && bot === 'S') || (player === 'P' && bot === 'R') || (player === 'S' && bot === 'P')) return 'W';
+      return 'L';
+    }
+    function weightedChoice(probs) {
+      const r = Math.random();
+      let cum = 0;
+      for (const key in probs) {
+        cum += probs[key];
+        if (r < cum) return key;
+      }
+      return Object.keys(probs)[0];
+    }
+    function download(filename, text) {
+      const blob = new Blob([text], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+    function getStreakAt(rounds, index, field) {
+      if (index < 0 || index >= rounds.length) return 1;
+      const val = rounds[index][field];
+      let streak = 1;
+      for (let i = index - 1; i >= 0; i--) {
+        if (rounds[i][field] === val) streak++;
+        else break;
+      }
+      return streak;
+    }
+    function getStreak(rounds, field) {
+      if (rounds.length === 0) return 1;
+      return getStreakAt(rounds, rounds.length - 1, field);
+    }
 
-    normalPlayerMove = null;
+    // ==================== BUILT-IN BOT ====================
+    function getBotMove(playerMove) {
+      const strategy = state.settings.botStrategy;
+      const prev = state.rounds.length > 0 ? state.rounds[state.rounds.length - 1] : null;
+      const roundNum = state.rounds.length + 1;
+      switch (strategy) {
+        case 'random':
+          return weightedChoice({ R: 1/3, P: 1/3, S: 1/3 });
+        case 'rock_biased':
+          return weightedChoice({ R: 0.5, P: 0.25, S: 0.25 });
+        case 'paper_biased':
+          return weightedChoice({ R: 0.25, P: 0.5, S: 0.25 });
+        case 'scissors_biased':
+          return weightedChoice({ R: 0.25, P: 0.25, S: 0.5 });
+        case 'adaptive':
+          if (!prev) return weightedChoice({ R: 1/3, P: 1/3, S: 1/3 });
+          const lastPlayer = prev.playerMove;
+          if (lastPlayer === 'R') return 'P';
+          if (lastPlayer === 'P') return 'S';
+          if (lastPlayer === 'S') return 'R';
+          return weightedChoice({ R: 1/3, P: 1/3, S: 1/3 });
+        case 'mirror':
+          return prev ? prev.playerMove : weightedChoice({ R: 1/3, P: 1/3, S: 1/3 });
+        case 'cycle':
+          const moves = ['R', 'P', 'S'];
+          return moves[(roundNum - 1) % 3];
+        default:
+          return weightedChoice({ R: 1/3, P: 1/3, S: 1/3 });
+      }
+    }
 
-    saveNormal();
+    // ==================== PREDICTION ENGINE ====================
+    function randomProbs() { return { R: 1/3, P: 1/3, S: 1/3 }; }
 
-    showNormalLastGame(
-        game
-    );
+    function frequencyModel(rounds) {
+      const counts = { R: 0, P: 0, S: 0 };
+      rounds.forEach(r => counts[r.botMove]++);
+      const total = rounds.length;
+      if (total === 0) return randomProbs();
+      return { R: counts.R / total, P: counts.P / total, S: counts.S / total };
+    }
 
-    updateAllUI();
+    function playerPrevModel(rounds) {
+      if (rounds.length === 0) return randomProbs();
+      const prevPlayer = rounds[rounds.length - 1].playerMove;
+      const filtered = rounds.filter(r => r.previousPlayerMove === prevPlayer);
+      const counts = { R: 0, P: 0, S: 0 };
+      filtered.forEach(r => counts[r.botMove]++);
+      const total = filtered.length;
+      if (total === 0) return frequencyModel(rounds);
+      return { R: counts.R / total, P: counts.P / total, S: counts.S / total };
+    }
 
-}
+    function botPrevModel(rounds) {
+      if (rounds.length === 0) return randomProbs();
+      const prevBot = rounds[rounds.length - 1].botMove;
+      const filtered = rounds.filter(r => r.previousBotMove === prevBot);
+      const counts = { R: 0, P: 0, S: 0 };
+      filtered.forEach(r => counts[r.botMove]++);
+      const total = filtered.length;
+      if (total === 0) return frequencyModel(rounds);
+      return { R: counts.R / total, P: counts.P / total, S: counts.S / total };
+    }
 
-
-/* =========================================================
-   NORMAL LAST GAME
-========================================================= */
-
-function showNormalLastGame(game) {
-
-    const result =
-        getResult(
-            game.player,
-            game.bot
-        );
-
-
-    const element =
-        document.getElementById(
-            "normalLastGame"
-        );
-
-
-    element.className =
-        `last-${result.toLowerCase()}`;
-
-
-    element.textContent =
-        `Last: ${game.player} ${game.bot} — ${result}`;
-
-}
-
-
-/* =========================================================
-   NORMAL STATS
-========================================================= */
-
-function updateNormalStats() {
-
-    let wins = 0;
-
-    let losses = 0;
-
-    let draws = 0;
-
-
-    normalGames.forEach(game => {
-
-        const result =
-            getResult(
-                game.player,
-                game.bot
-            );
-
-
-        if (result === "WIN") {
-            wins++;
+    function markovModel(rounds) {
+      const maxLen = 5;
+      const minSamples = 5;
+      for (let len = maxLen; len >= 0; len--) {
+        if (len === 0) return frequencyModel(rounds);
+        if (rounds.length < len) continue;
+        const context = rounds.slice(-len).map(r => r.playerMove);
+        const counts = { R: 0, P: 0, S: 0 };
+        let total = 0;
+        for (let i = len; i < rounds.length; i++) {
+          const ctx = rounds.slice(i - len, i).map(r => r.playerMove);
+          if (JSON.stringify(ctx) === JSON.stringify(context)) {
+            counts[rounds[i].botMove]++;
+            total++;
+          }
         }
-
-        else if (result === "LOSS") {
-            losses++;
+        if (total >= minSamples) {
+          return { R: counts.R / total, P: counts.P / total, S: counts.S / total };
         }
+      }
+      return frequencyModel(rounds);
+    }
 
-        else {
-            draws++;
+    function patternModel(rounds) {
+      const maxLen = 4;
+      const minSamples = 5;
+      for (let len = maxLen; len >= 0; len--) {
+        if (len === 0) return frequencyModel(rounds);
+        if (rounds.length < len) continue;
+        const context = rounds.slice(-len).map(r => r.playerMove + r.botMove);
+        const counts = { R: 0, P: 0, S: 0 };
+        let total = 0;
+        for (let i = len; i < rounds.length; i++) {
+          const ctx = rounds.slice(i - len, i).map(r => r.playerMove + r.botMove);
+          if (JSON.stringify(ctx) === JSON.stringify(context)) {
+            counts[rounds[i].botMove]++;
+            total++;
+          }
         }
+        if (total >= minSamples) {
+          return { R: counts.R / total, P: counts.P / total, S: counts.S / total };
+        }
+      }
+      return frequencyModel(rounds);
+    }
 
+    function naiveBayesModel(rounds) {
+      if (rounds.length < 5) return frequencyModel(rounds);
+      const last = rounds[rounds.length - 1];
+      const prevPlayer = last.playerMove;
+      const prevBot = last.botMove;
+      const prevResult = last.result;
+      const playerStreakVal = String(Math.min(getStreak(rounds, 'playerMove'), 5));
+      const botStreakVal = String(Math.min(getStreak(rounds, 'botMove'), 5));
+      const currentFeatures = {
+        prevPlayer,
+        prevBot,
+        prevResult,
+        playerStreak: playerStreakVal,
+        botStreak: botStreakVal
+      };
+
+      const moves = ['R', 'P', 'S'];
+      const prior = { R: 0, P: 0, S: 0 };
+      const condCounts = {};
+      const features = ['prevPlayer', 'prevBot', 'prevResult', 'playerStreak', 'botStreak'];
+      features.forEach(f => {
+        condCounts[f] = { R: {}, P: {}, S: {} };
+      });
+
+      for (let i = 1; i < rounds.length; i++) {
+        const r = rounds[i];
+        const bot = r.botMove;
+        prior[bot]++;
+
+        const rPrevPlayer = r.previousPlayerMove;
+        const rPrevBot = r.previousBotMove;
+        const rPrevResult = r.previousResult;
+        const rPlayerStreak = String(Math.min(getStreakAt(rounds, i, 'playerMove'), 5));
+        const rBotStreak = String(Math.min(getStreakAt(rounds, i, 'botMove'), 5));
+
+        condCounts.prevPlayer[bot][rPrevPlayer] = (condCounts.prevPlayer[bot][rPrevPlayer] || 0) + 1;
+        condCounts.prevBot[bot][rPrevBot] = (condCounts.prevBot[bot][rPrevBot] || 0) + 1;
+        condCounts.prevResult[bot][rPrevResult] = (condCounts.prevResult[bot][rPrevResult] || 0) + 1;
+        condCounts.playerStreak[bot][rPlayerStreak] = (condCounts.playerStreak[bot][rPlayerStreak] || 0) + 1;
+        condCounts.botStreak[bot][rBotStreak] = (condCounts.botStreak[bot][rBotStreak] || 0) + 1;
+      }
+
+      const vocab = {
+        prevPlayer: ['R', 'P', 'S'],
+        prevBot: ['R', 'P', 'S'],
+        prevResult: ['W', 'L', 'D'],
+        playerStreak: ['1', '2', '3', '4', '5'],
+        botStreak: ['1', '2', '3', '4', '5']
+      };
+      const alpha = 1;
+      const totalRounds = rounds.length;
+      const logScores = { R: 0, P: 0, S: 0 };
+
+      for (const m of moves) {
+        let logScore = Math.log((prior[m] + alpha) / (totalRounds + alpha * moves.length));
+        for (const feat of features) {
+          const featVal = currentFeatures[feat];
+          const featTotal = prior[m];
+          const count = condCounts[feat][m][featVal] || 0;
+          const vocabSize = vocab[feat].length;
+          const prob = (count + alpha) / (featTotal + alpha * vocabSize);
+          logScore += Math.log(prob);
+        }
+        logScores[m] = logScore;
+      }
+
+      const maxLog = Math.max(...moves.map(m => logScores[m]));
+      const expScores = { R: 0, P: 0, S: 0 };
+      for (const m of moves) expScores[m] = Math.exp(logScores[m] - maxLog);
+      const sumExp = expScores.R + expScores.P + expScores.S;
+      return { R: expScores.R / sumExp, P: expScores.P / sumExp, S: expScores.S / sumExp };
+    }
+
+    function getTopMove(probs) {
+      const max = Math.max(probs.R, probs.P, probs.S);
+      const candidates = [];
+      if (probs.R === max) candidates.push('R');
+      if (probs.P === max) candidates.push('P');
+      if (probs.S === max) candidates.push('S');
+      return candidates.length === 1 ? candidates[0] : candidates[Math.floor(Math.random() * candidates.length)];
+    }
+
+    function computeModelOutputs(rounds) {
+      return [
+        { name: 'Random', probs: randomProbs() },
+        { name: 'Frequency', probs: frequencyModel(rounds) },
+        { name: 'PlayerPrev', probs: playerPrevModel(rounds) },
+        { name: 'BotPrev', probs: botPrevModel(rounds) },
+        { name: 'Markov', probs: markovModel(rounds) },
+        { name: 'Pattern', probs: patternModel(rounds) },
+        { name: 'NaiveBayes', probs: naiveBayesModel(rounds) }
+      ].map(m => ({ ...m, topMove: getTopMove(m.probs) }));
+    }
+
+    function getRecentAccuracy(modelName, rounds, window = 100) {
+      const predRounds = rounds.filter(r => r.prediction && r.prediction.modelPredictions.some(m => m.name === modelName));
+      const recent = predRounds.slice(-window);
+      if (recent.length === 0) return 1/3;
+      const correct = recent.filter(r => {
+        const mp = r.prediction.modelPredictions.find(m => m.name === modelName);
+        return mp && mp.topMove === r.botMove;
+      }).length;
+      return correct / recent.length;
+    }
+
+    function getConfidenceLabel(score) {
+      if (score < 0.25) return 'Very Low';
+      if (score < 0.40) return 'Low';
+      if (score < 0.55) return 'Medium';
+      if (score < 0.70) return 'High';
+      return 'Very High';
+    }
+
+    function computePrediction() {
+      const rounds = state.rounds;
+      const modelOutputs = computeModelOutputs(rounds);
+
+      const accuracies = {};
+      const rawWeights = {};
+      let sumRaw = 0;
+      modelOutputs.forEach(m => {
+        const acc = getRecentAccuracy(m.name, rounds);
+        accuracies[m.name] = acc;
+        rawWeights[m.name] = Math.pow(acc + 0.1, 2);
+        sumRaw += rawWeights[m.name];
+      });
+      const weights = {};
+      modelOutputs.forEach(m => {
+        weights[m.name] = sumRaw > 0 ? rawWeights[m.name] / sumRaw : 1 / modelOutputs.length;
+      });
+
+      const ensemble = { R: 0, P: 0, S: 0 };
+      modelOutputs.forEach(m => {
+        ensemble.R += weights[m.name] * m.probs.R;
+        ensemble.P += weights[m.name] * m.probs.P;
+        ensemble.S += weights[m.name] * m.probs.S;
+      });
+
+      const ensembleTop = getTopMove(ensemble);
+      const agreeCount = modelOutputs.filter(m => m.topMove === ensembleTop).length;
+      const agreementRatio = agreeCount / modelOutputs.length;
+
+      const sortedProbs = [ensemble.R, ensemble.P, ensemble.S].sort((a, b) => b - a);
+      const edge = sortedProbs[0] - sortedProbs[1];
+      const avgAcc = modelOutputs.reduce((sum, m) => sum + accuracies[m.name], 0) / modelOutputs.length;
+      const confidenceScore = Math.min(1, Math.max(0, 0.5 * (edge * 3) + 0.3 * agreementRatio + 0.2 * avgAcc));
+      const confidenceLabel = getConfidenceLabel(confidenceScore);
+
+      const expectedScores = {
+        R: ensemble.S + 0.5 * ensemble.R,
+        P: ensemble.R + 0.5 * ensemble.P,
+        S: ensemble.P + 0.5 * ensemble.S
+      };
+      const maxExpected = Math.max(expectedScores.R, expectedScores.P, expectedScores.S);
+      const recommendedMove = ['R', 'P', 'S'].find(m => expectedScores[m] === maxExpected) || 'R';
+      const winProbability = recommendedMove === 'R' ? ensemble.S : recommendedMove === 'P' ? ensemble.R : ensemble.P;
+
+      return {
+        ensemble,
+        ensembleTop,
+        recommendedMove,
+        expectedScores,
+        winProbability,
+        confidence: confidenceLabel,
+        confidenceScore,
+        modelPredictions: modelOutputs.map(m => ({ name: m.name, probs: m.probs, topMove: m.topMove })),
+        modelAgreement: agreeCount,
+        totalModels: modelOutputs.length
+      };
+    }
+
+    // ==================== ROUND RECORDING ====================
+    function recordRound(playerMove, botMove, prediction) {
+      const roundNumber = state.rounds.length + 1;
+      const last = state.rounds.length > 0 ? state.rounds[state.rounds.length - 1] : null;
+      const result = getResult(playerMove, botMove);
+      const newRound = {
+        round: roundNumber,
+        session: state.settings.sessionId,
+        timestamp: new Date().toISOString(),
+        playerMove,
+        botMove,
+        result,
+        previousPlayerMove: last ? last.playerMove : null,
+        previousBotMove: last ? last.botMove : null,
+        previousResult: last ? last.result : null,
+        prediction: prediction || null
+      };
+      state.rounds.push(newRound);
+      saveState();
+      return newRound;
+    }
+
+    // ==================== RENDER HELPERS ====================
+    function moveBadge(m) {
+      return { R: '🪨 Rock', P: '📄 Paper', S: '✂️ Scissors' }[m] || m;
+    }
+    function distributionHTML(probs) {
+      const moves = ['R', 'P', 'S'];
+      return moves.map(m => {
+        const pct = Math.max(0, probs[m] * 100).toFixed(1);
+        return `<div class="prob-bar">
+          <span style="width:70px">${moveName(m)}</span>
+          <div class="bar"><div class="bar-fill" style="width:${pct}%"></div></div>
+          <span style="width:50px;text-align:right">${pct}%</span>
+        </div>`;
+      }).join('');
+    }
+    function confidenceHTML(label) {
+      return `<span class="confidence ${label.replace(/\s/g, '')}">${label}</span>`;
+    }
+    function predictionPanelHTML(pred) {
+      return `
+        <div class="prediction-panel">
+          <h3>Bot Prediction</h3>
+          ${distributionHTML(pred.ensemble)}
+          <div class="row" style="justify-content:space-between">
+            <span>Recommended: <strong>${moveBadge(pred.recommendedMove)}</strong></span>
+            <span>Win Prob: <strong>${(pred.winProbability * 100).toFixed(1)}%</strong></span>
+          </div>
+          <div class="row" style="justify-content:space-between">
+            <span>Confidence: ${confidenceHTML(pred.confidence)}</span>
+            <span>Agreement: ${pred.modelAgreement}/${pred.totalModels} models</span>
+          </div>
+          <div class="row" style="justify-content:space-between">
+            <span class="muted">Ensemble Top: ${moveName(pred.ensembleTop)}</span>
+            <span class="muted">Score: ${(pred.confidenceScore * 100).toFixed(0)}/100</span>
+          </div>
+        </div>`;
+    }
+    function resultPanelHTML(round, revealPrediction) {
+      let html = `
+        <div class="card">
+          <h3>Result</h3>
+          <div class="row">You: <strong>${moveBadge(round.playerMove)}</strong></div>
+          <div class="row">Bot: <strong>${moveBadge(round.botMove)}</strong></div>
+          <div class="row">Outcome: <strong>${resultName(round.result)}</strong></div>`;
+      if (round.prediction) {
+        if (revealPrediction) {
+          html += `<div class="prediction-panel" style="margin-top:0.5rem">
+            <h4>AI Prediction (revealed)</h4>
+            ${distributionHTML(round.prediction.ensemble)}
+            <div class="row">Recommended: <strong>${moveBadge(round.prediction.recommendedMove)}</strong></div>
+            <div class="row">Confidence: ${confidenceHTML(round.prediction.confidence)}</div>
+          </div>`;
+        } else {
+          html += `<div class="muted">AI Prediction was: <strong>${moveName(round.prediction.ensembleTop)}</strong> (${round.prediction.confidence})</div>`;
+        }
+      }
+      html += `</div>`;
+      return html;
+    }
+
+    // ==================== HOME ====================
+    function renderHome() {
+      const total = state.rounds.length;
+      const wins = state.rounds.filter(r => r.result === 'W').length;
+      const losses = state.rounds.filter(r => r.result === 'L').length;
+      const draws = state.rounds.filter(r => r.result === 'D').length;
+      const winRate = total ? ((wins / total) * 100).toFixed(1) : '0.0';
+
+      document.getElementById('mainContent').innerHTML = `
+        <div class="grid">
+          <div class="stat"><div class="value">${total}</div><div class="muted">Total Rounds</div></div>
+          <div class="stat"><div class="value">${wins}</div><div class="muted">Wins</div></div>
+          <div class="stat"><div class="value">${losses}</div><div class="muted">Losses</div></div>
+          <div class="stat"><div class="value">${draws}</div><div class="muted">Draws</div></div>
+          <div class="stat"><div class="value">${winRate}%</div><div class="muted">Win Rate</div></div>
+        </div>
+
+        <div class="card">
+          <h2>🔬 Experiment Modes</h2>
+          <div class="grid">
+            <button class="btn primary" onclick="navigateTab('data')">📊 Data Collection<br><span class="muted">Clean recorder</span></button>
+            <button class="btn primary" onclick="navigateTab('ai')">🧠 AI Prediction<br><span class="muted">Predict the bot</span></button>
+            <button class="btn primary" onclick="navigateTab('analysis')">🔬 Analysis Lab<br><span class="muted">Investigate data</span></button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>⚙️ Bot Settings</h3>
+          <div class="row">
+            <label>Bot Mode:</label>
+            <select id="botModeSelect" onchange="updateBotMode(this.value)">
+              <option value="auto" ${state.settings.botMode === 'auto' ? 'selected' : ''}>Auto (built-in bot)</option>
+              <option value="manual" ${state.settings.botMode === 'manual' ? 'selected' : ''}>Manual (enter bot move)</option>
+            </select>
+          </div>
+          <div class="row">
+            <label>Bot Strategy:</label>
+            <select id="botStrategySelect" onchange="updateBotStrategy(this.value)" ${state.settings.botMode === 'manual' ? 'disabled' : ''}>
+              <option value="random" ${state.settings.botStrategy === 'random' ? 'selected' : ''}>Random</option>
+              <option value="rock_biased" ${state.settings.botStrategy === 'rock_biased' ? 'selected' : ''}>Rock-biased</option>
+              <option value="paper_biased" ${state.settings.botStrategy === 'paper_biased' ? 'selected' : ''}>Paper-biased</option>
+              <option value="scissors_biased" ${state.settings.botStrategy === 'scissors_biased' ? 'selected' : ''}>Scissors-biased</option>
+              <option value="adaptive" ${state.settings.botStrategy === 'adaptive' ? 'selected' : ''}>Adaptive (counter)</option>
+              <option value="mirror" ${state.settings.botStrategy === 'mirror' ? 'selected' : ''}>Mirror (copy)</option>
+              <option value="cycle" ${state.settings.botStrategy === 'cycle' ? 'selected' : ''}>Cycle R-P-S</option>
+            </select>
+          </div>
+          <div class="row">
+            <label>Blind Evaluation (AI mode):</label>
+            <input type="checkbox" id="blindModeCheck" ${state.settings.blindMode ? 'checked' : ''} onchange="updateBlindMode(this.checked)">
+          </div>
+          <div class="row">
+            <label>Session ID:</label>
+            <span><strong>${state.settings.sessionId}</strong></span>
+            <button class="btn warning" onclick="newSession()">Start New Session</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>💾 Data Management</h3>
+          <div class="row">
+            <button class="btn" onclick="exportJSON()">Export JSON</button>
+            <button class="btn" onclick="exportCSV()">Export CSV</button>
+            <button class="btn" onclick="document.getElementById('importFile').click()">Import JSON</button>
+            <button class="btn danger" onclick="clearData()">Clear Experiment</button>
+          </div>
+          <div class="muted small">Data is stored locally in your browser. Use export to back up your dataset.</div>
+        </div>
+      `;
+    }
+
+    function navigateTab(tab) {
+      document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+      document.querySelector(`nav button[data-tab="${tab}"]`)?.classList.add('active');
+      ui.currentTab = tab;
+      renderTab(tab);
+    }
+
+    function updateBotMode(val) {
+      state.settings.botMode = val;
+      saveState();
+      renderHome();
+    }
+    function updateBotStrategy(val) {
+      state.settings.botStrategy = val;
+      saveState();
+    }
+    function updateBlindMode(val) {
+      state.settings.blindMode = val;
+      saveState();
+    }
+    function newSession() {
+      if (confirm('Start a new session? Current data will be kept, but future rounds will be tagged with a new session ID.')) {
+        state.settings.sessionId++;
+        saveState();
+        renderHome();
+      }
+    }
+
+    // ==================== DATA COLLECTION ====================
+    function renderDataCollection() {
+      const total = state.rounds.length;
+      const el = document.getElementById('mainContent');
+      let html = `<h2>📊 Data Collection</h2>
+        <div class="row"><span class="muted">Round: <strong>${total + 1}</strong></span> · <span class="muted">Session: <strong>${state.settings.sessionId}</strong></span> · <span class="muted">Bot Mode: <strong>${state.settings.botMode === 'auto' ? 'Auto' : 'Manual'}</strong></span></div>`;
+
+      if (ui.dcStep === 'player') {
+        html += `<div class="card">
+          <p>Choose your move:</p>
+          <div class="move-btns">
+            <button class="move-btn" onclick="dcPlayerMove('R')">🪨 Rock</button>
+            <button class="move-btn" onclick="dcPlayerMove('P')">📄 Paper</button>
+            <button class="move-btn" onclick="dcPlayerMove('S')">✂️ Scissors</button>
+          </div>
+        </div>`;
+      } else if (ui.dcStep === 'bot') {
+        html += `<div class="card">
+          <p>Bot move (manual):</p>
+          <div class="move-btns">
+            <button class="move-btn" onclick="dcBotMove('R')">🪨 Rock</button>
+            <button class="move-btn" onclick="dcBotMove('P')">📄 Paper</button>
+            <button class="move-btn" onclick="dcBotMove('S')">✂️ Scissors</button>
+          </div>
+        </div>`;
+      } else if (ui.dcStep === 'result') {
+        html += resultPanelHTML(ui.dcRound, false);
+        html += `<button class="btn primary" onclick="dcNextRound()">Next Round</button>`;
+      }
+
+      el.innerHTML = html;
+    }
+
+    function dcPlayerMove(move) {
+      if (ui.dcStep !== 'player') return;
+      ui.dcPlayerMove = move;
+      if (state.settings.botMode === 'auto') {
+        const botMove = getBotMove(move);
+        const round = recordRound(move, botMove, null);
+        ui.dcRound = round;
+        ui.dcStep = 'result';
+      } else {
+        ui.dcStep = 'bot';
+      }
+      renderDataCollection();
+    }
+    function dcBotMove(move) {
+      if (ui.dcStep !== 'bot') return;
+      ui.dcBotMove = move;
+      const round = recordRound(ui.dcPlayerMove, move, null);
+      ui.dcRound = round;
+      ui.dcStep = 'result';
+      renderDataCollection();
+    }
+    function dcNextRound() {
+      ui.dcStep = 'player';
+      ui.dcPlayerMove = null;
+      ui.dcBotMove = null;
+      ui.dcRound = null;
+      renderDataCollection();
+    }
+
+    // ==================== AI PREDICTION ====================
+    function renderAIPrediction() {
+      const total = state.rounds.length;
+      const el = document.getElementById('mainContent');
+      let html = `<h2>🧠 AI Prediction</h2>
+        <div class="row"><span class="muted">Round: <strong>${total + 1}</strong></span> · <span class="muted">Session: <strong>${state.settings.sessionId}</strong></span> · <span class="muted">Bot Mode: <strong>${state.settings.botMode === 'auto' ? 'Auto' : 'Manual'}</strong></span></div>`;
+
+      if (ui.aiStep === 'player') {
+        if (!ui.aiPrediction) ui.aiPrediction = computePrediction();
+        if (!state.settings.blindMode) {
+          html += predictionPanelHTML(ui.aiPrediction);
+        } else {
+          html += `<div class="card muted">🔒 Blind Evaluation Mode — prediction hidden until after round.</div>`;
+        }
+        html += `<div class="card">
+          <p>Choose your move:</p>
+          <div class="move-btns">
+            <button class="move-btn" onclick="aiPlayerMove('R')">🪨 Rock</button>
+            <button class="move-btn" onclick="aiPlayerMove('P')">📄 Paper</button>
+            <button class="move-btn" onclick="aiPlayerMove('S')">✂️ Scissors</button>
+          </div>
+        </div>`;
+      } else if (ui.aiStep === 'bot') {
+        html += `<div class="card">
+          <p>Bot move (manual):</p>
+          <div class="move-btns">
+            <button class="move-btn" onclick="aiBotMove('R')">🪨 Rock</button>
+            <button class="move-btn" onclick="aiBotMove('P')">📄 Paper</button>
+            <button class="move-btn" onclick="aiBotMove('S')">✂️ Scissors</button>
+          </div>
+        </div>`;
+      } else if (ui.aiStep === 'result') {
+        html += resultPanelHTML(ui.aiRound, state.settings.blindMode);
+        html += `<button class="btn primary" onclick="aiNextRound()">Next Round</button>`;
+      }
+
+      el.innerHTML = html;
+    }
+
+    function aiPlayerMove(move) {
+      if (ui.aiStep !== 'player') return;
+      ui.aiPlayerMove = move;
+      if (!ui.aiPrediction) ui.aiPrediction = computePrediction();
+      if (state.settings.botMode === 'auto') {
+        const botMove = getBotMove(move);
+        const round = recordRound(move, botMove, ui.aiPrediction);
+        ui.aiRound = round;
+        ui.aiStep = 'result';
+      } else {
+        ui.aiStep = 'bot';
+      }
+      renderAIPrediction();
+    }
+    function aiBotMove(move) {
+      if (ui.aiStep !== 'bot') return;
+      ui.aiBotMove = move;
+      const round = recordRound(ui.aiPlayerMove, move, ui.aiPrediction);
+      ui.aiRound = round;
+      ui.aiStep = 'result';
+      renderAIPrediction();
+    }
+    function aiNextRound() {
+      ui.aiStep = 'player';
+      ui.aiPlayerMove = null;
+      ui.aiBotMove = null;
+      ui.aiRound = null;
+      ui.aiPrediction = null;
+      renderAIPrediction();
+    }
+
+    // ==================== ANALYSIS ====================
+    function renderAnalysis() {
+      const rounds = state.rounds;
+      const total = rounds.length;
+      const wins = rounds.filter(r => r.result === 'W').length;
+      const losses = rounds.filter(r => r.result === 'L').length;
+      const draws = rounds.filter(r => r.result === 'D').length;
+      const winRate = total ? (wins / total * 100).toFixed(1) : '0.0';
+
+      const botCounts = { R: 0, P: 0, S: 0 };
+      rounds.forEach(r => botCounts[r.botMove]++);
+      const botDist = total ? { R: botCounts.R / total, P: botCounts.P / total, S: botCounts.S / total } : { R: 0, P: 0, S: 0 };
+
+      const botTrans = { R: { R: 0, P: 0, S: 0 }, P: { R: 0, P: 0, S: 0 }, S: { R: 0, P: 0, S: 0 } };
+      const playerResp = { R: { R: 0, P: 0, S: 0 }, P: { R: 0, P: 0, S: 0 }, S: { R: 0, P: 0, S: 0 } };
+      const resultResp = { W: { R: 0, P: 0, S: 0 }, L: { R: 0, P: 0, S: 0 }, D: { R: 0, P: 0, S: 0 } };
+      rounds.forEach(r => {
+        if (r.previousBotMove) botTrans[r.previousBotMove][r.botMove]++;
+        if (r.previousPlayerMove) playerResp[r.previousPlayerMove][r.botMove]++;
+        if (r.previousResult) resultResp[r.previousResult][r.botMove]++;
+      });
+
+      const botRepTotal = rounds.filter(r => r.previousBotMove).length;
+      const botRep = botRepTotal ? rounds.filter(r => r.previousBotMove && r.botMove === r.previousBotMove).length / botRepTotal : 0;
+      const playerRepTotal = rounds.filter(r => r.previousPlayerMove).length;
+      const playerRep = playerRepTotal ? rounds.filter(r => r.previousPlayerMove && r.playerMove === r.previousPlayerMove).length / playerRepTotal : 0;
+
+      const predRounds = rounds.filter(r => r.prediction);
+      const predTotal = predRounds.length;
+      const predAccuracy = predTotal ? predRounds.filter(r => r.prediction.ensembleTop === r.botMove).length / predTotal : 0;
+      const recWinRate = predTotal ? predRounds.filter(r => getResult(r.prediction.recommendedMove, r.botMove) === 'W').length / predTotal : 0;
+
+      const modelNames = ['Random', 'Frequency', 'PlayerPrev', 'BotPrev', 'Markov', 'Pattern', 'NaiveBayes'];
+      const modelAcc = {};
+      modelNames.forEach(name => {
+        const preds = predRounds.filter(r => r.prediction.modelPredictions.some(m => m.name === name));
+        if (preds.length === 0) { modelAcc[name] = { acc: null, total: 0 }; return; }
+        const correct = preds.filter(r => {
+          const mp = r.prediction.modelPredictions.find(m => m.name === name);
+          return mp && mp.topMove === r.botMove;
+        }).length;
+        modelAcc[name] = { acc: correct / preds.length, total: preds.length };
+      });
+
+      const recentPreds = predRounds.slice(-100);
+      const recentTotal = recentPreds.length;
+      const recentAcc = recentTotal ? recentPreds.filter(r => r.prediction.ensembleTop === r.botMove).length / recentTotal : null;
+
+      function transHTML(transObj) {
+        const moves = ['R', 'P', 'S'];
+        const rows = moves.map(prev => {
+          const counts = transObj[prev];
+          const totalPrev = counts.R + counts.P + counts.S;
+          if (totalPrev === 0) return '';
+          const probs = { R: counts.R / totalPrev, P: counts.P / totalPrev, S: counts.S / totalPrev };
+          return `<div style="margin:0.3rem 0"><strong>After ${moveName(prev)}:</strong>${distributionHTML(probs)}</div>`;
+        }).join('');
+        return rows || '<div class="muted">No data</div>';
+      }
+
+      document.getElementById('mainContent').innerHTML = `
+        <h2>🔬 Analysis Lab</h2>
+
+        <div class="analysis-section">
+          <h3>Overview</h3>
+          <div class="grid">
+            <div class="stat"><div class="value">${total}</div><div class="muted">Rounds</div></div>
+            <div class="stat"><div class="value">${wins}</div><div class="muted">Wins</div></div>
+            <div class="stat"><div class="value">${losses}</div><div class="muted">Losses</div></div>
+            <div class="stat"><div class="value">${draws}</div><div class="muted">Draws</div></div>
+            <div class="stat"><div class="value">${winRate}%</div><div class="muted">Win Rate</div></div>
+          </div>
+          <h3 style="margin-top:1rem">Bot Move Distribution</h3>
+          ${distributionHTML(botDist)}
+        </div>
+
+        <div class="analysis-section">
+          <h3>Bot Transitions</h3>
+          ${transHTML(botTrans)}
+        </div>
+
+        <div class="analysis-section">
+          <h3>Response to Your Previous Move</h3>
+          ${transHTML(playerResp)}
+        </div>
+
+        <div class="analysis-section">
+          <h3>Response After Win/Loss/Draw</h3>
+          ${transHTML(resultResp)}
+        </div>
+
+        <div class="analysis-section">
+          <h3>Streak Analysis</h3>
+          <div class="row"><span>Bot repetition rate:</span> <strong>${(botRep * 100).toFixed(1)}%</strong></div>
+          <div class="row"><span>Your repetition rate:</span> <strong>${(playerRep * 100).toFixed(1)}%</strong></div>
+        </div>
+
+        <div class="analysis-section">
+          <h3>AI Performance</h3>
+          <div class="grid">
+            <div class="stat"><div class="value">${predTotal}</div><div class="muted">Predictions</div></div>
+            <div class="stat"><div class="value">${(predAccuracy * 100).toFixed(1)}%</div><div class="muted">Prediction Accuracy</div></div>
+            <div class="stat"><div class="value">${(recWinRate * 100).toFixed(1)}%</div><div class="muted">Recommendation Win Rate</div></div>
+            <div class="stat"><div class="value">${recentAcc !== null ? (recentAcc * 100).toFixed(1) + '%' : '—'}</div><div class="muted">Recent 100 Acc.</div></div>
+          </div>
+          <h3 style="margin-top:1rem">Model Comparison</h3>
+          ${modelNames.map(name => {
+            const data = modelAcc[name];
+            if (data.total === 0) return `<div class="row"><span style="width:120px">${name}</span><span class="muted">no predictions</span></div>`;
+            const pct = data.acc * 100;
+            return `<div class="row"><span style="width:120px">${name}</span><div class="bar" style="flex:1"><div class="bar-fill green" style="width:${pct}%"></div></div><span style="width:60px">${pct.toFixed(1)}%</span></div>`;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    // ==================== HISTORY ====================
+    function renderHistory() {
+      const rounds = [...state.rounds].reverse();
+      let rows = '';
+      rounds.forEach(r => {
+        const predTop = r.prediction ? moveName(r.prediction.ensembleTop) : '—';
+        const rec = r.prediction ? moveName(r.prediction.recommendedMove) : '—';
+        const conf = r.prediction ? r.prediction.confidence : '—';
+        rows += `<tr onclick='showRoundJSON(${r.round})' style="cursor:pointer" title="Click for JSON">
+          <td>${r.round}</td>
+          <td>${r.session}</td>
+          <td>${moveBadge(r.playerMove)}</td>
+          <td>${moveBadge(r.botMove)}</td>
+          <td>${resultName(r.result)}</td>
+          <td>${predTop}</td>
+          <td>${rec}</td>
+          <td>${conf}</td>
+        </tr>`;
+      });
+      document.getElementById('mainContent').innerHTML = `
+        <h2>📜 History</h2>
+        <div class="scroll-table">
+          <table>
+            <thead><tr><th>#</th><th>Session</th><th>You</th><th>Bot</th><th>Result</th><th>Prediction</th><th>Recommended</th><th>Confidence</th></tr></thead>
+            <tbody>${rows || '<tr><td colspan="8" class="muted">No rounds yet.</td></tr>'}</tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function showRoundJSON(roundNumber) {
+      const round = state.rounds.find(r => r.round === roundNumber);
+      if (!round) return;
+      alert(JSON.stringify(round, null, 2));
+    }
+
+    // ==================== EXPORT / IMPORT ====================
+    function exportJSON() {
+      const data = {
+        exportedAt: new Date().toISOString(),
+        settings: state.settings,
+        rounds: state.rounds
+      };
+      download('rps_ai_lab_export.json', JSON.stringify(data, null, 2));
+    }
+    function exportCSV() {
+      const headers = ['round', 'session', 'timestamp', 'playerMove', 'botMove', 'result', 'previousPlayerMove', 'previousBotMove', 'previousResult', 'predictionTop', 'recommendedMove', 'confidence'];
+      const rows = state.rounds.map(r => [
+        r.round,
+        r.session,
+        r.timestamp,
+        r.playerMove,
+        r.botMove,
+        r.result,
+        r.previousPlayerMove || '',
+        r.previousBotMove || '',
+        r.previousResult || '',
+        r.prediction ? r.prediction.ensembleTop : '',
+        r.prediction ? r.prediction.recommendedMove : '',
+        r.prediction ? r.prediction.confidence : ''
+      ].join(','));
+      const csv = headers.join(',') + '\n' + rows.join('\n');
+      download('rps_ai_lab_export.csv', csv);
+    }
+    function importJSON(fileInput) {
+      const file = fileInput.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const data = JSON.parse(e.target.result);
+          if (!data.rounds || !Array.isArray(data.rounds)) throw new Error('Invalid data');
+          if (!confirm(`Import ${data.rounds.length} rounds? This will replace current local data.`)) return;
+          state.rounds = data.rounds;
+          if (data.settings) state.settings = { ...state.settings, ...data.settings };
+          saveState();
+          renderTab(ui.currentTab);
+        } catch (err) {
+          alert('Import failed: ' + err.message);
+        }
+      };
+      reader.readAsText(file);
+      fileInput.value = '';
+    }
+    function clearData() {
+      if (!confirm('⚠️ Clear all experiment data? This cannot be undone.')) return;
+      state.rounds = [];
+      state.settings.sessionId = 1;
+      saveState();
+      renderTab(ui.currentTab);
+    }
+
+    // ==================== NAVIGATION ====================
+    function renderTab(tab) {
+      ui.currentTab = tab;
+      switch (tab) {
+        case 'home': renderHome(); break;
+        case 'data': renderDataCollection(); break;
+        case 'ai': renderAIPrediction(); break;
+        case 'analysis': renderAnalysis(); break;
+        case 'history': renderHistory(); break;
+        default: renderHome();
+      }
+    }
+    function setupNavigation() {
+      document.querySelectorAll('nav button').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          renderTab(btn.dataset.tab);
+        });
+      });
+      document.getElementById('importFile').addEventListener('change', (e) => importJSON(e.target));
+    }
+
+    // ==================== INIT ====================
+    window.addEventListener('DOMContentLoaded', () => {
+      loadState();
+      setupNavigation();
+      renderTab('home');
     });
-
-
-    document.getElementById(
-        "normalTotalGames"
-    ).textContent =
-        normalGames.length;
-
-
-    document.getElementById(
-        "normalWins"
-    ).textContent =
-        wins;
-
-
-    document.getElementById(
-        "normalLosses"
-    ).textContent =
-        losses;
-
-
-    document.getElementById(
-        "normalDraws"
-    ).textContent =
-        draws;
-
-
-    const decided =
-        wins + losses;
-
-
-    const winRate =
-        decided === 0
-            ? 0
-            : wins / decided * 100;
-
-
-    document.getElementById(
-        "normalWinRate"
-    ).textContent =
-        winRate.toFixed(1) + "%";
-
-
-    document.getElementById(
-        "normalCount"
-    ).textContent =
-        normalGames.length;
-
-}
-
-
-/* =========================================================
-   NORMAL HISTORY
-========================================================= */
-
-function updateNormalHistory() {
-
-    const history =
-        document.getElementById(
-            "normalHistory"
-        );
-
-
-    history.innerHTML = "";
-
-
-    if (normalGames.length === 0) {
-
-        history.innerHTML =
-            `<div class="empty">
-                No games recorded yet.
-            </div>`;
-
-        return;
-
-    }
-
-
-    normalGames.forEach(
-        (game, index) => {
-
-            const result =
-                getResult(
-                    game.player,
-                    game.bot
-                );
-
-
-            const element =
-                document.createElement(
-                    "div"
-                );
-
-
-            element.className =
-                "game";
-
-
-            element.innerHTML = `
-
-                <span class="game-number">
-                    ${index + 1}.
-                </span>
-
-                <span class="moves">
-                    ${game.player} ${game.bot}
-                </span>
-
-                <span class="result ${result.toLowerCase()}">
-                    ${result}
-                </span>
-
-                <span class="date">
-                    ${formatDate(game.date)}
-                </span>
-
-            `;
-
-
-            history.appendChild(
-                element
-            );
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   NORMAL UNDO
-========================================================= */
-
-function normalUndo() {
-
-    /*
-        If waiting for bot,
-        cancel unfinished player move.
-    */
-
-    if (normalPlayerMove !== null) {
-
-        normalPlayerMove = null;
-
-        document.getElementById(
-            "normalStatus"
-        ).textContent =
-            "YOUR MOVE";
-
-        return;
-
-    }
-
-
-    if (normalGames.length === 0) {
-        return;
-    }
-
-
-    if (
-        !confirm(
-            "Remove the last normal game?"
-        )
-    ) {
-        return;
-    }
-
-
-    normalGames.pop();
-
-    saveNormal();
-
-    updateAllUI();
-
-}
-
-
-/* =========================================================
-   NORMAL CLEAR
-========================================================= */
-
-function normalClear() {
-
-    if (
-        !confirm(
-            "DELETE ALL NORMAL RECORDER DATA?"
-        )
-    ) {
-        return;
-    }
-
-
-    normalGames = [];
-
-    normalPlayerMove = null;
-
-    saveNormal();
-
-    document.getElementById(
-        "normalLastGame"
-    ).textContent = "";
-
-
-    updateAllUI();
-
-}
-
-
-/* =========================================================
-   NORMAL CSV
-========================================================= */
-
-function normalExportCSV() {
-
-    if (normalGames.length === 0) {
-
-        alert(
-            "No normal recorder data."
-        );
-
-        return;
-
-    }
-
-
-    const header =
-        "Game,Player,Bot,Result,Date";
-
-
-    const rows =
-        normalGames.map(
-            (game, index) => {
-
-                return [
-
-                    index + 1,
-
-                    game.player,
-
-                    game.bot,
-
-                    getResult(
-                        game.player,
-                        game.bot
-                    ),
-
-                    game.date || ""
-
-                ].join(",");
-
-            }
-        );
-
-
-    downloadFile(
-
-        header +
-        "\n" +
-        rows.join("\n"),
-
-        "rps_normal_games.csv",
-
-        "text/csv"
-
-    );
-
-}
-
-
-/* =========================================================
-   NORMAL JSON
-========================================================= */
-
-function normalExportJSON() {
-
-    if (normalGames.length === 0) {
-
-        alert(
-            "No normal recorder data."
-        );
-
-        return;
-
-    }
-
-
-    const backup = {
-
-        type:
-            "RPS Normal Recorder",
-
-        version:
-            1,
-
-        exportedAt:
-            new Date().toISOString(),
-
-        games:
-            normalGames
-
-    };
-
-
-    downloadFile(
-
-        JSON.stringify(
-            backup,
-            null,
-            2
-        ),
-
-        "rps_normal_backup.json",
-
-        "application/json"
-
-    );
-
-}
-
-
-/* =========================================================
-   NORMAL IMPORT
-========================================================= */
-
-function normalImportJSON(event) {
-
-    const file =
-        event.target.files[0];
-
-
-    if (!file) {
-        return;
-    }
-
-
-    const reader =
-        new FileReader();
-
-
-    reader.onload =
-        function(e) {
-
-            try {
-
-                const data =
-                    JSON.parse(
-                        e.target.result
-                    );
-
-
-                const imported =
-                    Array.isArray(data)
-                        ? data
-                        : data.games;
-
-
-                if (
-                    !Array.isArray(
-                        imported
-                    )
-                ) {
-                    throw new Error();
-                }
-
-
-                const valid =
-                    imported.every(
-                        game =>
-                            game &&
-                            ["P","R","S"]
-                                .includes(
-                                    game.player
-                                ) &&
-                            ["P","R","S"]
-                                .includes(
-                                    game.bot
-                                )
-                    );
-
-
-                if (!valid) {
-                    throw new Error();
-                }
-
-
-                if (
-                    !confirm(
-                        `Replace normal data with ${imported.length} games?`
-                    )
-                ) {
-                    return;
-                }
-
-
-                normalGames =
-                    imported;
-
-
-                normalPlayerMove =
-                    null;
-
-
-                saveNormal();
-
-                updateAllUI();
-
-
-                alert(
-                    `Restored ${normalGames.length} normal games.`
-                );
-
-            }
-
-            catch(error) {
-
-                alert(
-                    "Invalid normal recorder backup."
-                );
-
-            }
-
-            event.target.value = "";
-
-        };
-
-
-    reader.readAsText(file);
-
-}
-
-
-/* =========================================================
-   EXPERIMENT RANDOMIZATION
-========================================================= */
-
-function randomMove() {
-
-    const values =
-        new Uint32Array(1);
-
-
-    crypto.getRandomValues(
-        values
-    );
-
-
-    return [
-        "R",
-        "P",
-        "S"
-    ][
-        values[0] % 3
-    ];
-
-}
-
-
-/* =========================================================
-   EXPERIMENT SAVE
-========================================================= */
-
-function saveExperiment() {
-
-    localStorage.setItem(
-        "rpsExperiment",
-        JSON.stringify(
-            experimentGames
-        )
-    );
-
-}
-
-
-/* =========================================================
-   GENERATE EXPERIMENT MOVE
-========================================================= */
-
-function generateNextMove() {
-
-    if (paused) {
-        return;
-    }
-
-
-    if (
-        experimentGames.length >=
-        TARGET_ROUNDS
-    ) {
-
-        currentMove = null;
-
-        document.getElementById(
-            "requiredMove"
-        ).textContent =
-            "✓";
-
-
-        disableBotButtons(
-            true
-        );
-
-
-        return;
-
-    }
-
-
-    currentMove =
-        randomMove();
-
-
-    document.getElementById(
-        "requiredMove"
-    ).textContent =
-        currentMove;
-
-
-    document.getElementById(
-        "experimentRoundNumber"
-    ).textContent =
-        experimentGames.length + 1;
-
-
-    disableBotButtons(
-        false
-    );
-
-}
-
-
-/* =========================================================
-   RECORD EXPERIMENT BOT MOVE
-========================================================= */
-
-function recordBot(botMove) {
-
-    if (paused) {
-        return;
-    }
-
-
-    if (currentMove === null) {
-        return;
-    }
-
-
-    const playerMove =
-        currentMove;
-
-
-    const result =
-        getResult(
-            playerMove,
-            botMove
-        );
-
-
-    const game = {
-
-        round:
-            experimentGames.length + 1,
-
-        player:
-            playerMove,
-
-        bot:
-            botMove,
-
-        result:
-            result,
-
-        timestamp:
-            new Date().toISOString()
-
-    };
-
-
-    experimentGames.push(
-        game
-    );
-
-
-    saveExperiment();
-
-
-    showExperimentResult(
-        game
-    );
-
-
-    currentMove =
-        null;
-
-
-    updateAllUI();
-
-
-    /*
-        Generate only after the
-        current round is recorded.
-    */
-
-    setTimeout(
-        generateNextMove,
-        250
-    );
-
-}
-
-
-/* =========================================================
-   EXPERIMENT RESULT
-========================================================= */
-
-function showExperimentResult(game) {
-
-    const element =
-        document.getElementById(
-            "lastResult"
-        );
-
-
-    element.className =
-        "last-result";
-
-
-    if (
-        game.result === "WIN"
-    ) {
-
-        element.classList.add(
-            "last-win"
-        );
-
-
-        element.textContent =
-            `Round ${game.round}: ${game.player} → ${game.bot} — YOU WIN`;
-
-    }
-
-    else if (
-        game.result === "LOSS"
-    ) {
-
-        element.classList.add(
-            "last-loss"
-        );
-
-
-        element.textContent =
-            `Round ${game.round}: ${game.player} → ${game.bot} — BOT WINS`;
-
-    }
-
-    else {
-
-        element.classList.add(
-            "last-draw"
-        );
-
-
-        element.textContent =
-            `Round ${game.round}: ${game.player} → ${game.bot} — DRAW`;
-
-    }
-
-}
-
-
-/* =========================================================
-   EXPERIMENT BUTTONS
-========================================================= */
-
-function disableBotButtons(disabled) {
-
-    document.getElementById(
-        "botR"
-    ).disabled =
-        disabled;
-
-
-    document.getElementById(
-        "botP"
-    ).disabled =
-        disabled;
-
-
-    document.getElementById(
-        "botS"
-    ).disabled =
-        disabled;
-
-}
-
-
-/* =========================================================
-   EXPERIMENT PAUSE
-========================================================= */
-
-function togglePause() {
-
-    paused =
-        !paused;
-
-
-    const button =
-        document.getElementById(
-            "pauseButton"
-        );
-
-
-    if (paused) {
-
-        button.textContent =
-            "Resume";
-
-
-        disableBotButtons(
-            true
-        );
-
-    }
-
-    else {
-
-        button.textContent =
-            "Pause";
-
-
-        if (
-            currentMove === null
-        ) {
-
-            generateNextMove();
-
-        }
-
-        else {
-
-            disableBotButtons(
-                false
-            );
-
-        }
-
-    }
-
-}
-
-
-/* =========================================================
-   EXPERIMENT STATS
-========================================================= */
-
-function updateExperimentStats() {
-
-    let wins = 0;
-
-    let losses = 0;
-
-    let draws = 0;
-
-
-    const matrix = {
-
-        R: {
-            R: 0,
-            P: 0,
-            S: 0
-        },
-
-        P: {
-            R: 0,
-            P: 0,
-            S: 0
-        },
-
-        S: {
-            R: 0,
-            P: 0,
-            S: 0
-        }
-
-    };
-
-
-    experimentGames.forEach(
-        game => {
-
-            if (
-                game.result === "WIN"
-            ) {
-                wins++;
-            }
-
-            else if (
-                game.result === "LOSS"
-            ) {
-                losses++;
-            }
-
-            else {
-                draws++;
-            }
-
-
-            if (
-                matrix[game.player] &&
-                matrix[game.player][game.bot]
-                !== undefined
-            ) {
-
-                matrix[
-                    game.player
-                ][
-                    game.bot
-                ]++;
-
-            }
-
-        }
-    );
-
-
-    const total =
-        experimentGames.length;
-
-
-    document.getElementById(
-        "experimentTotalGames"
-    ).textContent =
-        total;
-
-
-    document.getElementById(
-        "experimentBotWins"
-    ).textContent =
-        losses;
-
-
-    document.getElementById(
-        "experimentPlayerWins"
-    ).textContent =
-        wins;
-
-
-    document.getElementById(
-        "experimentDraws"
-    ).textContent =
-        draws;
-
-
-    const botWinRate =
-        total === 0
-            ? 0
-            : losses / total * 100;
-
-
-    document.getElementById(
-        "experimentBotWinRate"
-    ).textContent =
-        botWinRate.toFixed(1) + "%";
-
-
-    /*
-        Matrix
-    */
-
-    const ids = [
-
-        ["RR", matrix.R.R],
-        ["RP", matrix.R.P],
-        ["RS", matrix.R.S],
-
-        ["PR", matrix.P.R],
-        ["PP", matrix.P.P],
-        ["PS", matrix.P.S],
-
-        ["SR", matrix.S.R],
-        ["SP", matrix.S.P],
-        ["SS", matrix.S.S]
-
-    ];
-
-
-    ids.forEach(
-        item => {
-
-            document.getElementById(
-                item[0]
-            ).textContent =
-                item[1];
-
-        }
-    );
-
-
-    const rTotal =
-        matrix.R.R +
-        matrix.R.P +
-        matrix.R.S;
-
-
-    const pTotal =
-        matrix.P.R +
-        matrix.P.P +
-        matrix.P.S;
-
-
-    const sTotal =
-        matrix.S.R +
-        matrix.S.P +
-        matrix.S.S;
-
-
-    document.getElementById(
-        "RTotal"
-    ).textContent =
-        rTotal;
-
-
-    document.getElementById(
-        "PTotal"
-    ).textContent =
-        pTotal;
-
-
-    document.getElementById(
-        "STotal"
-    ).textContent =
-        sTotal;
-
-
-    const rCounter =
-        rTotal === 0
-            ? 0
-            : matrix.R.P / rTotal * 100;
-
-
-    const pCounter =
-        pTotal === 0
-            ? 0
-            : matrix.P.S / pTotal * 100;
-
-
-    const sCounter =
-        sTotal === 0
-            ? 0
-            : matrix.S.R / sTotal * 100;
-
-
-    document.getElementById(
-        "RCounter"
-    ).textContent =
-        rCounter.toFixed(1) + "%";
-
-
-    document.getElementById(
-        "PCounter"
-    ).textContent =
-        pCounter.toFixed(1) + "%";
-
-
-    document.getElementById(
-        "SCounter"
-    ).textContent =
-        sCounter.toFixed(1) + "%";
-
-
-    const counters =
-        matrix.R.P +
-        matrix.P.S +
-        matrix.S.R;
-
-
-    const counterRate =
-        total === 0
-            ? 0
-            : counters / total * 100;
-
-
-    document.getElementById(
-        "experimentCounterRate"
-    ).textContent =
-        counterRate.toFixed(1) + "%";
-
-
-    /*
-        Random move distribution
-    */
-
-    document.getElementById(
-        "freqR"
-    ).textContent =
-        total === 0
-            ? "0%"
-            : (
-                rTotal /
-                total *
-                100
-            ).toFixed(1) + "%";
-
-
-    document.getElementById(
-        "freqP"
-    ).textContent =
-        total === 0
-            ? "0%"
-            : (
-                pTotal /
-                total *
-                100
-            ).toFixed(1) + "%";
-
-
-    document.getElementById(
-        "freqS"
-    ).textContent =
-        total === 0
-            ? "0%"
-            : (
-                sTotal /
-                total *
-                100
-            ).toFixed(1) + "%";
-
-
-    document.getElementById(
-        "experimentCount"
-    ).textContent =
-        experimentGames.length;
-
-}
-
-
-/* =========================================================
-   EXPERIMENT HISTORY
-========================================================= */
-
-function updateExperimentHistory() {
-
-    const history =
-        document.getElementById(
-            "experimentHistory"
-        );
-
-
-    history.innerHTML = "";
-
-
-    if (
-        experimentGames.length === 0
-    ) {
-
-        history.innerHTML =
-            `<div class="empty">
-                No experiment rounds recorded yet.
-            </div>`;
-
-        return;
-
-    }
-
-
-    /*
-        Newest first.
-    */
-
-    [
-        ...experimentGames
-    ]
-    .reverse()
-    .forEach(
-        game => {
-
-            const element =
-                document.createElement(
-                    "div"
-                );
-
-
-            element.className =
-                "game";
-
-
-            element.innerHTML = `
-
-                <span class="game-number">
-                    ${game.round}.
-                </span>
-
-                <span class="moves">
-                    ${game.player} → ${game.bot}
-                </span>
-
-                <span class="result ${game.result.toLowerCase()}">
-                    ${game.result}
-                </span>
-
-                <span class="date">
-                    ${formatDate(game.timestamp)}
-                </span>
-
-            `;
-
-
-            history.appendChild(
-                element
-            );
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   EXPERIMENT UNDO
-========================================================= */
-
-function experimentUndo() {
-
-    if (
-        experimentGames.length === 0
-    ) {
-        return;
-    }
-
-
-    if (
-        !confirm(
-            "Remove the last experiment round?"
-        )
-    ) {
-        return;
-    }
-
-
-    experimentGames.pop();
-
-
-    saveExperiment();
-
-
-    currentMove =
-        null;
-
-
-    updateAllUI();
-
-
-    generateNextMove();
-
-}
-
-
-/* =========================================================
-   EXPERIMENT CLEAR
-========================================================= */
-
-function clearExperiment() {
-
-    if (
-        !confirm(
-            "DELETE ALL EXPERIMENT DATA?"
-        )
-    ) {
-        return;
-    }
-
-
-    experimentGames = [];
-
-    currentMove = null;
-
-
-    saveExperiment();
-
-
-    document.getElementById(
-        "lastResult"
-    ).textContent = "";
-
-
-    updateAllUI();
-
-
-    generateNextMove();
-
-}
-
-
-/* =========================================================
-   EXPERIMENT CSV
-========================================================= */
-
-function experimentExportCSV() {
-
-    if (
-        experimentGames.length === 0
-    ) {
-
-        alert(
-            "No experiment data."
-        );
-
-        return;
-
-    }
-
-
-    const header =
-        "Round,Player,Bot,Result,Timestamp";
-
-
-    const rows =
-        experimentGames.map(
-            game => {
-
-                return [
-
-                    game.round,
-
-                    game.player,
-
-                    game.bot,
-
-                    game.result,
-
-                    game.timestamp
-
-                ].join(",");
-
-            }
-        );
-
-
-    downloadFile(
-
-        header +
-        "\n" +
-        rows.join("\n"),
-
-        "rps_anti_cheating_experiment.csv",
-
-        "text/csv"
-
-    );
-
-}
-
-
-/* =========================================================
-   EXPERIMENT JSON
-========================================================= */
-
-function experimentExportJSON() {
-
-    if (
-        experimentGames.length === 0
-    ) {
-
-        alert(
-            "No experiment data."
-        );
-
-        return;
-
-    }
-
-
-    const backup = {
-
-        type:
-            "RPS Anti-Cheating Experiment",
-
-        version:
-            2,
-
-        targetRounds:
-            TARGET_ROUNDS,
-
-        exportedAt:
-            new Date().toISOString(),
-
-        games:
-            experimentGames
-
-    };
-
-
-    downloadFile(
-
-        JSON.stringify(
-            backup,
-            null,
-            2
-        ),
-
-        "rps_anti_cheating_backup.json",
-
-        "application/json"
-
-    );
-
-}
-
-
-/* =========================================================
-   EXPERIMENT IMPORT
-========================================================= */
-
-function experimentImportJSON(event) {
-
-    const file =
-        event.target.files[0];
-
-
-    if (!file) {
-        return;
-    }
-
-
-    const reader =
-        new FileReader();
-
-
-    reader.onload =
-        function(e) {
-
-            try {
-
-                const data =
-                    JSON.parse(
-                        e.target.result
-                    );
-
-
-                const imported =
-                    Array.isArray(data)
-                        ? data
-                        : data.games;
-
-
-                if (
-                    !Array.isArray(
-                        imported
-                    )
-                ) {
-                    throw new Error();
-                }
-
-
-                const valid =
-                    imported.every(
-                        game =>
-                            game &&
-                            ["R","P","S"]
-                                .includes(
-                                    game.player
-                                ) &&
-                            ["R","P","S"]
-                                .includes(
-                                    game.bot
-                                )
-                    );
-
-
-                if (!valid) {
-                    throw new Error();
-                }
-
-
-                if (
-                    !confirm(
-                        `Replace experiment data with ${imported.length} rounds?`
-                    )
-                ) {
-                    return;
-                }
-
-
-                experimentGames =
-                    imported;
-
-
-                currentMove =
-                    null;
-
-
-                saveExperiment();
-
-
-                updateAllUI();
-
-
-                generateNextMove();
-
-
-                alert(
-                    `Restored ${experimentGames.length} experiment rounds.`
-                );
-
-            }
-
-            catch(error) {
-
-                alert(
-                    "Invalid experiment backup."
-                );
-
-            }
-
-
-            event.target.value = "";
-
-        };
-
-
-    reader.readAsText(
-        file
-    );
-
-}
-
-
-/* =========================================================
-   DATE
-========================================================= */
-
-function formatDate(dateString) {
-
-    if (!dateString) {
-        return "Unknown";
-    }
-
-
-    return new Date(
-        dateString
-    ).toLocaleString(
-        [],
-        {
-            year: "numeric",
-            month: "2-digit",
-            day: "2-digit",
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit"
-        }
-    );
-
-}
-
-
-/* =========================================================
-   DOWNLOAD
-========================================================= */
-
-function downloadFile(
-    content,
-    filename,
-    type
-) {
-
-    const blob =
-        new Blob(
-            [content],
-            {
-                type:
-                    type
-            }
-        );
-
-
-    const url =
-        URL.createObjectURL(
-            blob
-        );
-
-
-    const a =
-        document.createElement(
-            "a"
-        );
-
-
-    a.href =
-        url;
-
-
-    a.download =
-        filename;
-
-
-    document.body.appendChild(
-        a
-    );
-
-
-    a.click();
-
-
-    a.remove();
-
-
-    URL.revokeObjectURL(
-        url
-    );
-
-}
-
-
-/* =========================================================
-   UPDATE ALL UI
-========================================================= */
-
-function updateAllUI() {
-
-    /*
-        Normal
-    */
-
-    updateNormalStats();
-
-    updateNormalHistory();
-
-
-    /*
-        Experiment
-    */
-
-    updateExperimentStats();
-
-    updateExperimentHistory();
-
-
-    /*
-        Normal status
-    */
-
-    document.getElementById(
-        "normalStatus"
-    ).textContent =
-        normalPlayerMove === null
-            ? "YOUR MOVE"
-            : "BOT MOVE";
-
-
-    /*
-        Experiment round
-    */
-
-    document.getElementById(
-        "experimentRoundNumber"
-    ).textContent =
-        Math.min(
-            experimentGames.length + 1,
-            TARGET_ROUNDS
-        );
-
-
-    document.getElementById(
-        "experimentTargetNumber"
-    ).textContent =
-        TARGET_ROUNDS;
-
-
-    /*
-        Home counts
-    */
-
-    document.getElementById(
-        "normalCount"
-    ).textContent =
-        normalGames.length;
-
-
-    document.getElementById(
-        "experimentCount"
-    ).textContent =
-        experimentGames.length;
-
-}
-
-
-/* =========================================================
-   KEYBOARD SHORTCUTS
-========================================================= */
-
-/*
-    Normal Recorder:
-    First R/P/S = your move.
-    Second R/P/S = bot move.
-
-    Experiment:
-    R/P/S = bot response.
-
-    Keyboard shortcuts are only active for
-    the currently selected mode.
-*/
-
-document.addEventListener(
-    "keydown",
-    function(event) {
-
-        const key =
-            event.key.toUpperCase();
-
-
-        if (
-            key !== "R" &&
-            key !== "P" &&
-            key !== "S"
-        ) {
-            return;
-        }
-
-
-        const normalActive =
-            document
-                .getElementById(
-                    "normalHome"
-                )
-                .classList
-                .contains("active");
-
-
-        const experimentActive =
-            document
-                .getElementById(
-                    "experimentHome"
-                )
-                .classList
-                .contains("active");
-
-
-        if (normalActive) {
-
-            normalChoose(key);
-
-        }
-
-
-        else if (experimentActive) {
-
-            recordBot(key);
-
-        }
-
-    }
-);
-
-
-/*
-    Backspace:
-
-    Normal mode:
-    undo/cancel.
-
-    Experiment:
-    undo last experiment round.
-*/
-
-document.addEventListener(
-    "keydown",
-    function(event) {
-
-        if (
-            event.key !== "Backspace"
-        ) {
-            return;
-        }
-
-
-        const normalActive =
-            document
-                .getElementById(
-                    "normalHome"
-                )
-                .classList
-                .contains("active");
-
-
-        const experimentActive =
-            document
-                .getElementById(
-                    "experimentHome"
-                )
-                .classList
-                .contains("active");
-
-
-        if (normalActive) {
-
-            normalUndo();
-
-        }
-
-        else if (experimentActive) {
-
-            experimentUndo();
-
-        }
-
-    }
-);
-
-
-/* =========================================================
-   INITIALIZATION
-========================================================= */
-
-updateAllUI();
-
-generateNextMove();
-
-</script>
-
+  </script>
 </body>
     </html>
